@@ -46,7 +46,10 @@ async function main(args = []) {
     const workloadId = `${scrapper.name}-${today()}`
 
     // Launch a new browser session.
-    const browser = await puppeteer.launch()
+    const browser = await puppeteer.launch({
+        headless: true,
+        args: ['--no-sandbox', '--disable-setuid-sandbox'] // Add sandbox flags
+    })
 
     // Create paginator
     const paginator = await nkPaginator(n, k, pageSize)
