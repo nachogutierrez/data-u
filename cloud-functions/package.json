@@ -1,5 +1,5 @@
 {
-    "name": "start-scrapers",
+    "name": "cloud-functions",
     "version": "1.0.0",
     "description": "A Google Cloud Function to start a Compute Engine instance.",
     "main": "index.js",
@@ -7,7 +7,7 @@
       "googleapis": "^59.0.0"
     },
     "scripts": {
-      "deploy-scrapers": "gcloud functions deploy startScrapers --runtime nodejs20 --trigger-http --allow-unauthenticated"
+      "deploy": "gcloud functions deploy startScrapers --runtime nodejs20 --trigger-http --allow-unauthenticated"
     },
     "engines": {
       "node": "20"

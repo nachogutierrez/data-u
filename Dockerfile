@@ -1,5 +1,5 @@
 # Use an official Node runtime as a parent image
-FROM node:21.6.1
+FROM node:21.6.1-slim
 
 # Set the working directory in the container
 WORKDIR /usr/src/app
@@ -36,12 +36,3 @@ RUN npm install
 
 # Bundle app source inside Docker image
 COPY . .
-
-# Your app binds to port 3000 so you'll use the EXPOSE instruction to have it mapped by the docker daemon
-EXPOSE 3000
-
-# Define environment variable
-ENV GOOGLE_APPLICATION_CREDENTIALS /usr/src/app/service-account.json
-
-# Run main.js when the container launches
-CMD ["node", "main.js"]

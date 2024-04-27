@@ -24,5 +24,5 @@ function serializeError(error) {
 
 export async function logFailedPage(workloadId, pageSize, pageNumber, error) {
     const serializedError = JSON.stringify(serializeError(error), null, 4)
-    await uploadObjectToGCS(pageErrorFilePath(workloadId, pageSize, pageNumber), serializeError)
+    await uploadObjectToGCS(pageErrorFilePath(workloadId, pageSize, pageNumber), serializedError)
 }

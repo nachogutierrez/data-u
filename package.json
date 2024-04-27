@@ -1,11 +1,15 @@
 {
-  "name": "remax",
+  "name": "scraper",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Data-U Scraper",
+  "main": "main.js",
   "type": "module",
   "scripts": {
-    "start": "node main.js 1 0 2 2 remax gcloudstorage",
+    "start": "node main.js",
+    "start-basic": "node main.js 1 0 1 1 remax local",
+    "docker-build": "docker build --no-cache -t nachogutierrez/data-u-scraper:latest .",
+    "docker-push": "docker push nachogutierrez/data-u-scraper:latest",
+    "docker-start": "docker run -v ./service-account.json:/usr/src/app/service-account.json nachogutierrez/data-u-scraper:latest ./start.sh",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

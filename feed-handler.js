@@ -46,6 +46,7 @@ export async function handleFeed(workloadId, browser, scrapper, dataHandler, pag
 
     if (data === undefined) {
         console.error(`FAILURE: pageSize=${pageSize} pageNumber=${pageNumber}`)
+        console.error(lastError)
         await logFailedPage(workloadId, pageSize, pageNumber, lastError)
 
         // Call recursively to handle next page
