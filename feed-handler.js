@@ -1,10 +1,9 @@
 import { handlePage } from './page-handler.js'
-// import { handleFailedPage } from './error-handler.js'
 
 export async function handleFeed(workloadId, browser, scrapper, dataHandler, paginator, opts = {}) {
 
     const { createFeedLink } = scrapper
-    const { storeData, hasData, logFailedPage } = dataHandler
+    const { storeData, hasData } = dataHandler
     const { maxPages } = opts
 
     const start = new Date().getTime()
@@ -25,48 +24,22 @@ export async function handleFeed(workloadId, browser, scrapper, dataHandler, pag
         return handleFeed(workloadId, browser, scrapper, dataHandler, paginator, opts)
     }
 
-    let failures = 0
-    let data
-    let lastError
-
-    // This loop is here to try fetching the data a total of 3 times.
-    for (let i = 0; i < 1; i++) {
-        try {
-            // Retrieve data for current page
-            data = await handlePage(browser, scrapper, pageSize, pageNumber)
-        } catch (error) {
-            // Move to next loop cycle to try again
-            lastError = error
-            failures++
-            continue
-        }
-        // If retrieving data succeeded, break the loop
-        break
-    }
-
-    if (data === undefined) {
-        console.error(`FAILURE: pageSize=${pageSize} pageNumber=${pageNumber}`)
-        console.error(lastError)
-        await logFailedPage(workloadId, pageSize, pageNumber, lastError)
-
-        // Call recursively to handle next page
-        return handleFeed(workloadId, browser, scrapper, dataHandler, paginator, opts)
-    }
-
-    const elapsedMillis = new Date().getTime() - start
+    // Get all data for current page
+    const data = await handlePage(workloadId, browser, scrapper, dataHandler, pageSize, pageNumber)
 
     if (data.length > 0) {
-        console.log(`SUCCESS: pageSize=${pageSize} pageNumber=${pageNumber} elapsedMillis=${elapsedMillis} failures=${failures}.`)
+        const elapsedMillis = new Date().getTime() - start
+        console.log(`SUCCESS: pageSize=${pageSize} pageNumber=${pageNumber} elapsedMillis=${elapsedMillis}.`)
 
         const metadata = {
             elapsedMillis,
-            failures,
             pageSize,
-            pageNumber
+            pageNumber,
+            feedLink: createFeedLink(pageSize, pageNumber)
         }
 
         // Store data before proceeding to next page
-        await storeData(workloadId, data, metadata)
+        await storeData(workloadId, pageSize, pageNumber, { data, metadata })
 
         // Call recursively to handle next page
         await handleFeed(workloadId, browser, scrapper, dataHandler, paginator, opts)

@@ -13,9 +13,9 @@ exports.startScrapers = async (req, res) => {
     const zone = 'southamerica-west1-a';
 
     // TODO: clean up templates, leave only 1
-    const template = 'projects/data-u-420919/global/instanceTemplates/scraper-v3';
+    const template = 'projects/data-u-420919/global/instanceTemplates/scraper-v4';
 
-    const n = 8
+    const n = 10
     const pageSize = 100
     const maxPages = -1
     const scraperName = 'remax'

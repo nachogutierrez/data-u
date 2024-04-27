@@ -1,7 +1,8 @@
 import { promises as fs } from 'fs';
 
-const pageFilePath = (workloadId, pageSize, pageNumber) => `tmp/${workloadId}/ps_${pageSize}_pn_${pageNumber}.json`
-const pageErrorFilePath = (workloadId, pageSize, pageNumber) => `tmp/${workloadId}/error_ps_${pageSize}_pn_${pageNumber}.json`
+const pageFilePath = (workloadId, pageSize, pageNumber) => `${workloadId}/ps_${pageSize}_pn_${pageNumber}.json`
+const pageErrorFilePath = (workloadId, pageSize, pageNumber) => `${workloadId}/error_ps_${pageSize}_pn_${pageNumber}.json`
+const itemErrorFilePath = (workloadId, pageSize, pageNumber, itemNumber) => `${workloadId}/error_ps_${pageSize}_pn_${pageNumber}_i_${itemNumber}.json`
 
 async function checkFileExists(filePath) {
     try {
@@ -12,28 +13,21 @@ async function checkFileExists(filePath) {
     }
   }
 
-export async function storeData(workloadId, data, metadata) {
-    const { pageSize, pageNumber } = metadata
-    const allData = { data, metadata }
+export async function storeData(workloadId, pageSize, pageNumber, payload) {
     await fs.mkdir(`tmp/${workloadId}`, { recursive: true })
-    await fs.writeFile(pageFilePath(workloadId, pageSize, pageNumber), JSON.stringify(allData, null, 4), 'utf8');
+    await fs.writeFile(`tmp/${pageFilePath(workloadId, pageSize, pageNumber)}`, JSON.stringify(payload, null, 4), 'utf8');
 }
 
 export async function hasData(workloadId, pageSize, pageNumber) {
-    return checkFileExists(pageFilePath(workloadId, pageSize, pageNumber))
+    return checkFileExists(`tmp/${pageFilePath(workloadId, pageSize, pageNumber)}`)
 }
 
-function serializeError(error) {
-    return {
-      message: error.message,    // Error message
-      stack: error.stack,        // Stack trace
-      name: error.name,          // Error name (e.g., ReferenceError)
-      ...(error.code && { code: error.code }),  // Include code if it exists (useful for Node.js errors)
-    };
-  }
-
-export async function logFailedPage(workloadId, pageSize, pageNumber, error) {
-    const serializedError = JSON.stringify(serializeError(error), null, 4)
+export async function logFailedPage(workloadId, pageSize, pageNumber, payload) {
     await fs.mkdir(`tmp/${workloadId}`, { recursive: true })
-    await fs.writeFile(pageErrorFilePath(workloadId, pageSize, pageNumber), serializedError, 'utf8')
+    await fs.writeFile(`tmp/${pageErrorFilePath(workloadId, pageSize, pageNumber)}`, JSON.stringify(payload, null, 4), 'utf8')
+}
+
+export async function logFailedItem(workloadId, pageSize, pageNumber, itemNumber, payload) {
+  await fs.mkdir(`tmp/${workloadId}`, { recursive: true })
+  await fs.writeFile(`tmp/${itemErrorFilePath(workloadId, pageSize, pageNumber, itemNumber)}`, JSON.stringify(payload, null, 4), 'utf8')
 }
