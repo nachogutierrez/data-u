@@ -1,4 +1,6 @@
-node_modules
-tmp
-npm-debug.log
-service-account.json
+**/node_modules
+**/*.log
+**/*.git
+**/npm-debug.log
+**/service-account.json
+**/tmp

@@ -42,7 +42,7 @@ exports.startScrapers = async (req, res) => {
                 name: instanceName,
                 metadata: {
                     items: [
-                        {key: 'startup-script-url', value: 'https://raw.githubusercontent.com/nachogutierrez/data-u/master/gce-startup.sh'},
+                        {key: 'startup-script-url', value: 'https://raw.githubusercontent.com/nachogutierrez/data-u/master/startup-scripts/gce-scraper-startup.sh'},
                         {key: 'app-args', value: `${n} ${k} ${pageSize} ${maxPages} ${scraperName} ${uploadStrategy}`},
                         {key: 'serial-port-enable', value: '1'}
                     ]

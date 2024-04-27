@@ -1,4 +1,4 @@
-import { serializeError } from './data-handlers/utils.js'
+import { serializeError } from 'common/error-utils.js'
 
 export async function handlePage(workloadId, browser, scrapper, dataHandler, pageSize, pageNumber) {
 
@@ -10,15 +10,16 @@ export async function handlePage(workloadId, browser, scrapper, dataHandler, pag
     // Open a new page.
     const page = await browser.newPage();
 
-    // Navigate to the URL.
-    await page.goto(feedLink, { waitUntil: 'networkidle0', timeout: 60000 })
-
-    // Wait for the table to be loaded. Use a CSS selector for the table items.
-    await page.waitForSelector(feedSelector, { timeout: 45000 })
-
     // Extract links from page.
     let links = []
     try {
+        // Navigate to the URL.
+        await page.goto(feedLink, { waitUntil: 'networkidle0', timeout: 60000 })
+
+        // Wait for the table to be loaded. Use a CSS selector for the table items.
+        await page.waitForSelector(feedSelector, { timeout: 45000 })
+
+        // Extract all item links
         links = await page.evaluate(extractLinks)
     } catch(error) {
         const payload = {
@@ -37,6 +38,9 @@ export async function handlePage(workloadId, browser, scrapper, dataHandler, pag
     for (let i = 0; i < links.length; i++) {
         const link = links[i]
         try {
+            if (i === 1) {
+                throw new Error('pa mono')
+            }
             const itemData = await handleItem(page, link)
             data.push(itemData)
         } catch(error) {

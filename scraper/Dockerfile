@@ -28,11 +28,20 @@ RUN apt-get update && apt-get install -y \
     libxshmfence1 \
     && rm -rf /var/lib/apt/lists/*
 
+# Copy common package.json and package-lock.json
+COPY common/package*.json ./common/
+
+# Install dependencies for common
+RUN cd common && npm install
+
 # Copy package.json and package-lock.json
-COPY package*.json ./
+COPY scraper/package*.json ./
 
 # Install any needed packages
 RUN npm install
 
+# Manually copy the common package from the parent directory
+COPY common ./node_modules/common
+
 # Bundle app source inside Docker image
-COPY . .
+COPY scraper/ .

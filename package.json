@@ -1,24 +1,13 @@
 {
-  "name": "scraper",
+  "name": "data-u",
   "version": "1.0.0",
-  "description": "Data-U Scraper",
-  "main": "main.js",
-  "type": "module",
+  "description": "Data Understanding",
   "scripts": {
-    "start": "node main.js",
-    "start-basic": "node main.js 1 0 1 1 remax local",
-    "docker-build": "docker build --no-cache -t nachogutierrez/data-u-scraper:latest .",
-    "docker-push": "docker push nachogutierrez/data-u-scraper:latest",
-    "docker-start": "docker run -v ./service-account.json:/usr/src/app/service-account.json nachogutierrez/data-u-scraper:latest ./start.sh",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "docker-build-scraper": "docker build -f scraper/Dockerfile --no-cache -t nachogutierrez/data-u-scraper:latest .",
+    "docker-push-scraper": "docker push nachogutierrez/data-u-scraper:latest",
+    "docker-run-scraper": "docker run -v ./scraper/service-account.json:/usr/src/app/service-account.json nachogutierrez/data-u-scraper:latest ./start.sh"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "@google-cloud/storage": "^7.10.0",
-    "axios": "^1.6.8",
-    "jsdom": "^24.0.0",
-    "puppeteer": "^22.6.5"
-  }
+  "license": "ISC"
 }

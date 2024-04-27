@@ -10,7 +10,7 @@ APP_ARGS=$(curl "http://metadata.google.internal/computeMetadata/v1/instance/att
 exec > >(tee -a /tmp/$INSTANCE_NAME.log) 2>&1
 
 # Download all docker images
-docker pull nachogutierrez/data-u:v1.0
+docker pull nachogutierrez/data-u-scraper:latest
 docker pull google/cloud-sdk:slim
 
 # Download service-account credentials
