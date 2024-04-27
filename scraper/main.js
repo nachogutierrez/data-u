@@ -28,7 +28,7 @@ function validateArgs(args) {
     }
 
     if (scrappers[args[4]] === undefined) {
-        throw new Error(`Invalid scrapper name '${args[4]}', choose one from [${Object.keys(scrappers)}]`)
+        throw new Error(`Invalid scraper name '${args[4]}', choose one from [${Object.keys(scrappers)}]`)
     }
 
     if (dataHandlers[args[5]] === undefined) {

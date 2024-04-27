@@ -11,9 +11,61 @@ const storage = new Storage({
     keyFilename: path.join(__dirname, 'service-account.json')
 })
 
-const bucketName = 'workloads'
+export async function listObjectsWithPrefix(bucketName, prefix) {
+    try {
+        const bucket = storage.bucket(bucketName);
+        const [files] = await bucket.getFiles({
+            prefix: prefix
+        });
 
-export async function uploadObjectToGCS(filePath, object) {
+        const fileNames = files.map(file => file.name);
+        return fileNames;
+
+    } catch (error) {
+        console.error('ERROR:', error);
+        throw error; // Rethrow or handle error appropriately
+    }
+}
+
+export async function downloadObjectFromGCS(bucketName, filePath) {
+    try {
+        const bucket = storage.bucket(bucketName);
+        const file = bucket.file(filePath);
+
+        // Create a buffer to hold the data from the stream
+        let buffer = Buffer.alloc(0);
+
+        // Use a PassThrough stream to collect the download stream
+        const bufferStream = new stream.PassThrough();
+        bufferStream.on('data', (chunk) => {
+            buffer = Buffer.concat([buffer, chunk]);
+        });
+
+        // Wrap the pipe and download in a promise to handle asynchronous download properly
+        await new Promise((resolve, reject) => {
+            file.createReadStream()
+                .on('error', (error) => {
+                    console.error('ERROR:', error);
+                    reject(error);
+                })
+                .on('end', () => {
+                    console.log(`${filePath} downloaded from ${bucketName}.`);
+                    resolve();
+                })
+                .pipe(bufferStream);
+        });
+
+        // Convert buffer to a string and then parse JSON
+        const object = JSON.parse(buffer.toString('utf-8'));
+        return object;
+
+    } catch (error) {
+        console.error('ERROR:', error);
+        throw error; // Rethrow or handle error appropriately
+    }
+}
+
+export async function uploadObjectToGCS(bucketName, filePath, object) {
     try {
         const bucket = storage.bucket(bucketName);
         const file = bucket.file(filePath);
