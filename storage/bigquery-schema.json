@@ -10,6 +10,11 @@
         "mode": "REQUIRED"
     },
     {
+        "name": "host",
+        "type": "STRING",
+        "mode": "REQUIRED"
+    },
+    {
         "name": "price",
         "type": "INTEGER",
         "mode": "REQUIRED"
@@ -20,32 +25,37 @@
         "mode": "REQUIRED"
     },
     {
-        "name": "location",
-        "type": "STRING",
-        "mode": "REPEATED"
-    },
-    {
-        "name": "surface_total",
-        "type": "INTEGER",
-        "mode": "NULLABLE"
-    },
-    {
-        "name": "surface_covered",
-        "type": "INTEGER",
-        "mode": "NULLABLE"
-    },
-    {
-        "name": "surface_terrain",
-        "type": "INTEGER",
-        "mode": "NULLABLE"
-    },
-    {
-        "name": "link",
+        "name": "operation",
         "type": "STRING",
         "mode": "REQUIRED"
     },
     {
-        "name": "host",
+        "name": "dimensionTotal",
+        "type": "STRING",
+        "mode": "NULLABLE"
+    },
+    {
+        "name": "dimensionCovered",
+        "type": "STRING",
+        "mode": "NULLABLE"
+    },
+    {
+        "name": "address",
+        "type": "STRING",
+        "mode": "REPEATED"
+    },
+    {
+        "name": "location",
+        "type": "GEOGRAPHY",
+        "mode": "NULLABLE"
+    },
+    {
+        "name": "maps",
+        "type": "STRING",
+        "mode": "NULLABLE"
+    },
+    {
+        "name": "link",
         "type": "STRING",
         "mode": "REQUIRED"
     }

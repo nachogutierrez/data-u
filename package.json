@@ -5,7 +5,10 @@
   "scripts": {
     "docker-build-scraper": "docker build -f scraper/Dockerfile --no-cache -t nachogutierrez/data-u-scraper:latest .",
     "docker-push-scraper": "docker push nachogutierrez/data-u-scraper:latest",
-    "docker-run-scraper": "docker run -v ./scraper/service-account.json:/usr/src/app/service-account.json nachogutierrez/data-u-scraper:latest ./start.sh"
+    "docker-run-scraper": "docker run -v ./scraper/service-account.json:/usr/src/app/service-account.json nachogutierrez/data-u-scraper:latest ./start.sh",
+    "docker-build-fastscraper": "docker build -f fastscraper/Dockerfile --no-cache -t nachogutierrez/data-u-fastscraper:latest .",
+    "docker-push-fastscraper": "docker push nachogutierrez/data-u-fastscraper:latest",
+    "docker-run-fastscraper": "docker run -v ./common/service-account.json:/usr/src/app/node_modules/common/service-account.json nachogutierrez/data-u-fastscraper:latest ./start.sh"
   },
   "keywords": [],
   "author": "",
