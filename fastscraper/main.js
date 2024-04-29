@@ -51,23 +51,38 @@ async function main(flags = {}) {
     const responseTimes = []
     const loopTimes = []
     const pushChunkTimes = []
+    let nextFailures = 0
 
     const { iterator } = iterators[host]
     const { normalize } = normalizers[host]
     const { pushData, pushStats, pushErrors } = sinks[sink]
-    const { hasNext, next } = iterator({ maxPages, pageSize })
+    const { hasNext, next, close } = iterator({ maxPages, pageSize })
 
     const scrapingStart = new Date().getTime()
     while(await hasNext()) {
+
+        if (nextFailures >= 20) {
+            console.log(`20 calls to next() failed, stopping...`);
+            break
+        }
 
         const loopStart = new Date().getTime()
 
         console.log(new Date())
 
-        const start = new Date().getTime()
-        const rawData = await next()
-        const elapsedMillis = new Date().getTime() - start
-        responseTimes.push(elapsedMillis)
+        let rawData
+        let elapsedMillis
+        try {
+            const start = new Date().getTime()
+            rawData = await next()
+            elapsedMillis = new Date().getTime() - start
+            responseTimes.push(elapsedMillis)
+        } catch(error) {
+            nextFailures++
+            errors.push({ error: serializeError(error), context: {} })
+            await sleep((1/qps) * 1000)
+            continue
+        }
 
 
         for (let rawDataPoint of rawData) {
@@ -79,7 +94,10 @@ async function main(flags = {}) {
         }
 
         // sleep so that we generate the intended QPS
-        await sleep((1/qps) * 1000 - elapsedMillis)
+        const sleepFor = (1/qps) * 1000 - elapsedMillis
+        if (sleepFor > 0) {
+            await sleep((1/qps) * 1000 - elapsedMillis)
+        }
 
         loopTimes.push(new Date().getTime() - loopStart)
     }
@@ -122,12 +140,15 @@ async function main(flags = {}) {
         loopTimes: stats(loopTimes),
         pushChunkTimes: stats(pushChunkTimes),
         scrapingElapsedMillis,
-        pushingDataElapsedMillis
+        pushingDataElapsedMillis,
+        nextFailures
     }
     if (errors.length > 0) {
         allStats.pushingErrorsElapsedMillis = pushingErrorsElapsedMillis
     }
     await pushStats(workloadId, allStats)
+
+    await close()
 }
 
 const argv = yargs(hideBin(process.argv)).options({

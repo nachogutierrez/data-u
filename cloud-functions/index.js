@@ -18,36 +18,47 @@ exports.startFastScrapers = async(req, res) => {
     const zone = 'southamerica-west1-a';
     const template = 'projects/data-u-420919/global/instanceTemplates/scraper-v4';
 
-    const appArgs = `--host=remax --qps=0.1 --sink=prod --pageSize=100 --maxPages=-1`
-    const workloadId = `remax-${today()}`
+    const date = today()
+
+    const argsPerHost = {
+        'remax': `--host=remax --qps=0.1 --sink=prod --pageSize=100 --maxPages=-1`,
+        'zonaprop': `--host=zonaprop --qps=0.05 --sink=prod --maxPages=-1`,
+    }
 
     const authClient = await authorize()
 
-    const instanceName = `fastscraper-${workloadId}-vm`
-    const request = {
-        project: project,
-        zone: zone,
-        resource: {
-            name: instanceName,
-            metadata: {
-                items: [
-                    {key: 'startup-script-url', value: 'https://raw.githubusercontent.com/nachogutierrez/data-u/master/startup-scripts/gce-fastscraper-startup.sh'},
-                    {key: 'app-args', value: appArgs },
-                    {key: 'serial-port-enable', value: '1'}
-                ]
-            }
-        },
-        sourceInstanceTemplate: template,
-        auth: authClient,
-    };
+    for (let host of Object.keys(argsPerHost)) {
+        const workloadId = `${host}-${date}`
+        const appArgs = argsPerHost[host]
 
-    try {
-        await compute.instances.insert(request)
-        res.status(200).send('Instance created successfully');
-    } catch (err) {
-        console.error("Problem with creating instance, Error:", err);
-        return res.status(500).send(err.toString());
+        const instanceName = `fastscraper-${workloadId}-vm`
+        const request = {
+            project: project,
+            zone: zone,
+            resource: {
+                name: instanceName,
+                metadata: {
+                    items: [
+                        {key: 'startup-script-url', value: 'https://raw.githubusercontent.com/nachogutierrez/data-u/master/startup-scripts/gce-fastscraper-startup.sh'},
+                        {key: 'app-args', value: appArgs },
+                        {key: 'serial-port-enable', value: '1'}
+                    ]
+                }
+            },
+            sourceInstanceTemplate: template,
+            auth: authClient,
+        };
+
+        try {
+            await compute.instances.insert(request)
+            console.log(`Workload ${workloadId} started successfully`)
+        } catch (err) {
+            console.error("Problem with creating instance, Error:", err);
+            return res.status(500).send(err.toString());
+        }
     }
+
+    res.status(200).send('Instances created successfully');
 }
 
 // TODO: Run cloud function on schedule

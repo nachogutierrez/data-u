@@ -28,8 +28,13 @@ export function iterator(opts = {}) {
         }
     }
 
+    async function close() {
+        // do nothing
+    }
+
     return {
         hasNext,
-        next
+        next,
+        close
     }
 }
