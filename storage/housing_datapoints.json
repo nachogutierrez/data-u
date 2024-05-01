@@ -16,7 +16,7 @@
     },
     {
         "name": "price",
-        "type": "INTEGER",
+        "type": "FLOAT",
         "mode": "REQUIRED"
     },
     {
@@ -31,12 +31,12 @@
     },
     {
         "name": "dimensionTotal",
-        "type": "STRING",
+        "type": "FLOAT",
         "mode": "NULLABLE"
     },
     {
         "name": "dimensionCovered",
-        "type": "STRING",
+        "type": "FLOAT",
         "mode": "NULLABLE"
     },
     {

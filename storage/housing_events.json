@@ -1,0 +1,27 @@
+[
+    {
+        "name": "event_date",
+        "type": "DATE",
+        "mode": "REQUIRED"
+    },
+    {
+        "name": "id",
+        "type": "STRING",
+        "mode": "REQUIRED"
+    },
+    {
+        "name": "host",
+        "type": "STRING",
+        "mode": "REQUIRED"
+    },
+    {
+        "name": "event",
+        "type": "STRING",
+        "mode": "REQUIRED"
+    },
+    {
+        "name": "link",
+        "type": "STRING",
+        "mode": "REQUIRED"
+    }
+]

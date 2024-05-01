@@ -40,18 +40,18 @@ export function normalize(rawDataPoint = {}) {
     }
 
     const id = rawDataPoint.internalId
-    const price = rawDataPoint.price
+    const price = parseInt(rawDataPoint.price, 10)
     const currency = rawDataPoint.currency.value.toLowerCase()
     const operation = rawDataPoint.operation.value.toLowerCase()
 
     let dimensionTotal
     if (rawDataPoint?.dimensionTotalBuilt) {
-        dimensionTotal = rawDataPoint.dimensionTotalBuilt
+        dimensionTotal = parseInt(rawDataPoint.dimensionTotalBuilt, 10)
     }
 
     let dimensionCovered
     if (rawDataPoint?.dimensionCovered) {
-        dimensionCovered = rawDataPoint.dimensionCovered
+        dimensionCovered = parseInt(rawDataPoint.dimensionCovered, 10)
     }
 
     let location

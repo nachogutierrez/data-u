@@ -51,7 +51,7 @@ export function normalize(rawDataPoint = {}) {
     if (!rawDataPoint.priceOperationTypes[0]?.prices[0]?.amount || !rawDataPoint.priceOperationTypes[0]?.prices[0]?.currency) {
         throw new Error(`Was expecting to find both price amount and currency.`)
     }
-    const price = rawDataPoint.priceOperationTypes[0]?.prices[0]?.amount
+    const price = parseInt(rawDataPoint.priceOperationTypes[0]?.prices[0]?.amount, 10)
     const currency = rawDataPoint.priceOperationTypes[0]?.prices[0]?.currency.trim().toLowerCase()
     const operation = operationTypeMapping[rawDataPoint.priceOperationTypes[0]?.operationType?.name]
 
