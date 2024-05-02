@@ -22,7 +22,7 @@ exports.startFastScrapers = async(req, res) => {
 
     const argsPerHost = {
         'remax': `--host=remax --qps=0.1 --sink=prod --pageSize=100 --maxPages=-1`,
-        'zonaprop': `--host=zonaprop --qps=0.05 --sink=prod --maxPages=-1`,
+        'zonaprop': `--host=zonaprop --qps=0.03333 --sink=prod --maxPages=-1`,
     }
 
     const authClient = await authorize()
