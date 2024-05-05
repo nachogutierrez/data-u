@@ -1,0 +1,16 @@
+{
+	"folders": [
+		{
+			"path": "fastscraper"
+		},
+		{
+			"path": "frontend"
+		},
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"typescript.tsdk": "frontend/node_modules/typescript/lib"
+	}
+}
