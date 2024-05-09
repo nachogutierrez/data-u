@@ -1,6 +1,10 @@
+"use client";
+
+import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import React from 'react'
+
+import SessionButton from '@/app/components/SessionButton';
 
 export default function Navbar() {
     return (
@@ -15,12 +19,10 @@ export default function Navbar() {
                         alt={'HomeWatch'}
                         priority={true}></Image>
                 </Link>
-                <Link href='/app/units'>Units</Link>
-                <Link href='/app/profile'>Profile</Link>
             </div>
 
             <div className="right">
-
+                <SessionButton></SessionButton>
             </div>
         </nav>
     )

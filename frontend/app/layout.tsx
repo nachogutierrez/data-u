@@ -3,8 +3,9 @@ import { Rubik } from "next/font/google";
 // import Navbar from "./Navbar"; 
 
 import "@/app/globals.css";
+import { SessionProvider } from "next-auth/react";
 
-const font = Rubik ({ subsets: ["latin"] });
+const font = Rubik({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "HomeWatch",
@@ -19,8 +20,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={font.className}>
-        {/* <Navbar></Navbar> */}
-        {children}
+        <SessionProvider>
+          {children}
+        </SessionProvider>
       </body>
     </html>
   );

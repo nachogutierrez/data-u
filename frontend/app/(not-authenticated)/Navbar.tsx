@@ -1,8 +1,17 @@
+"use client";
+
 import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
+import { useSession } from 'next-auth/react'
+import { GoogleSignInButton } from '../components/GoogleSignInButton';
+import SessionButton from '../components/SessionButton';
 
 export default function Navbar() {
+
+    const { data: session, status } = useSession()
+    const isLoading = status === 'loading'
+
     return (
         <nav>
             <div className="left">
@@ -19,7 +28,7 @@ export default function Navbar() {
                 <Link href='/pricing'>Pricing</Link>
             </div>
             <div className="right">
-                <Link href='/login'>Login</Link>
+                <SessionButton/>
             </div>
         </nav>
     )

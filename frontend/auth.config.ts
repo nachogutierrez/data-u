@@ -1,9 +1,7 @@
 import type { NextAuthConfig } from 'next-auth';
- 
+import GoogleProvider from "next-auth/providers/google";
+
 export const authConfig = {
-  pages: {
-    signIn: '/login',
-  },
   callbacks: {
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
@@ -11,11 +9,33 @@ export const authConfig = {
       if (isOnDashboard) {
         if (isLoggedIn) return true;
         return false; // Redirect unauthenticated users to login page
-      } else if (isLoggedIn) {
-        return Response.redirect(new URL('/app', nextUrl));
       }
       return true;
     },
+    signIn({ account, profile }): boolean {
+
+      // Only verified google accounts with gmail.com domain can login.
+      if (account?.provider === "google"
+        && profile?.email_verified
+        && profile?.email
+        && profile.email.endsWith("@gmail.com")) {
+        return true
+      }
+
+      return false
+    }
   },
-  providers: [], // Add providers with an empty array for now
+  providers: [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      authorization: {
+        params: {
+          prompt: "consent",
+          access_type: "offline",
+          response_type: "code"
+        }
+      }
+    })
+  ],
 } satisfies NextAuthConfig;
