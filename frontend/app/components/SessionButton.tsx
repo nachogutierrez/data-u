@@ -43,12 +43,12 @@ export default function SessionButton() {
     const isLoading = status === 'loading'
 
     const [isOpen, setIsOpen] = useState(false);
-    const ref = useRef();
+    const ref = useRef<HTMLInputElement>(null);
 
     // Handle clicking outside of the dropdown to close it
     useEffect(() => {
         const handleClickOutside = (event: any) => {
-            if (ref.current && !ref.current.contains(event.target)) {
+            if (ref?.current && !ref.current.contains(event.target)) {
                 setIsOpen(false);
             }
         };

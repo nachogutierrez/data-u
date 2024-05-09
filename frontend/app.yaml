@@ -1,1 +1,7 @@
 runtime: nodejs20
+env_variables:
+  AUTH_SECRET: "{{AUTH_SECRET}}"
+  GOOGLE_CLIENT_ID: "{{GOOGLE_CLIENT_ID}}"
+  GOOGLE_CLIENT_SECRET: "{{GOOGLE_CLIENT_SECRET}}"
+  NEXTAUTH_URL: "https://data-u-420919.uc.r.appspot.com"
+  AUTH_TRUST_HOST: "https://data-u-420919.uc.r.appspot.com"

@@ -1,6 +1,12 @@
-import NextAuth from 'next-auth';
-import { authConfig } from './auth.config';
+import NextAuth, { NextAuthResult } from 'next-auth';
+import { getAuthConfig } from './auth.config';
 
-export const { auth, signIn, signOut, handlers: { GET, POST } } = NextAuth({
-    ...authConfig
-});
+let nextAuthResult: NextAuthResult
+
+export async function getNextAuth() {
+    if (!nextAuthResult) {
+        nextAuthResult = NextAuth(await getAuthConfig())
+    }
+
+    return nextAuthResult
+}

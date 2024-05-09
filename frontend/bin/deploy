@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# Create a temporary file
+# tmp_file=$(mktemp)
+filename="app.$(date +%Y%m%d%H%M%S).yaml"
+
+echo "Hello" > $filename
+
+# Ensure that the temporary file is removed on exit
+trap 'rm -f "$filename"' EXIT
+
+# Read from stdin and write to temporary file
+cat > "$filename"
+
+# Replace 'your_command' with the actual command that needs the tmp file path
+# Example: if you need to pass the temp file to a script, you could do something like:
+# ./your_script.sh "$tmp_file"
+# cat "$tmp_file"
+gcloud app deploy $filename
+
+# The temporary file will be deleted automatically when the script exits
