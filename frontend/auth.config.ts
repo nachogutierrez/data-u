@@ -15,14 +15,23 @@ export const authConfig = {
     signIn({ account, profile }): boolean {
 
       // Only verified google accounts with gmail.com domain can login.
-      if (account?.provider === "google"
-        && profile?.email_verified
-        && profile?.email
-        && profile.email.endsWith("@gmail.com")) {
-        return true
+      if (account?.provider !== "google"
+        || !profile?.email_verified
+        || !profile?.email
+        || !profile.email.endsWith("@gmail.com")) {
+        return false
       }
 
-      return false
+      const admins = [
+        'nachogutierrezibanez@gmail.com',
+        'ragolegal@gmail.com',
+        'n.giacomuzo@gmail.com'
+      ]
+      if (!admins.includes(profile.email)) {
+        return false
+      }
+
+      return true
     }
   },
   providers: [

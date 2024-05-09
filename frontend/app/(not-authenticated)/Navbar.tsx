@@ -4,7 +4,6 @@ import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
 import { useSession } from 'next-auth/react'
-import { GoogleSignInButton } from '../components/GoogleSignInButton';
 import SessionButton from '../components/SessionButton';
 
 export default function Navbar() {
