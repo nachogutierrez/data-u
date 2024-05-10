@@ -4,7 +4,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
 import { useSession } from 'next-auth/react'
-import SessionButton from '../components/SessionButton';
+import SessionButton from '@/components/session/SessionButton';
 
 export default function Navbar() {
 
@@ -12,7 +12,7 @@ export default function Navbar() {
     const isLoading = status === 'loading'
 
     return (
-        <nav>
+        <nav className="w-full">
             <div className="left">
                 <Link href={'/'}>
                     <Image
@@ -23,7 +23,7 @@ export default function Navbar() {
                         alt={'HomeWatch'}
                         priority={true}></Image>
                 </Link>
-                <Link href='/'>Products</Link>
+                {/* <Link href='/'>Products</Link> */}
                 <Link href='/pricing'>Pricing</Link>
             </div>
             <div className="right">

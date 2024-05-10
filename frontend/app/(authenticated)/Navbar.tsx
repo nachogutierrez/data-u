@@ -4,11 +4,11 @@ import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 
-import SessionButton from '@/app/components/SessionButton';
+import SessionButton from '@/components/session/SessionButton';
 
 export default function Navbar() {
     return (
-        <nav>
+        <nav className="w-full">
             <div className="left">
                 <Link href={'/app/welcome'}>
                     <Image

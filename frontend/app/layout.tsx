@@ -19,7 +19,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={font.className}>
+      <body className={`${font.className} m-0 flex flex-wrap items-center justify-center`}>
         <SessionProvider>
           {children}
         </SessionProvider>
