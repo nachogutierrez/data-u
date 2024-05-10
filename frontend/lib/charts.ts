@@ -1,28 +1,23 @@
-import { BigQueryDate } from "@google-cloud/bigquery"
-
-export type DataItem = {
-    date: BigQueryDate,
-    name: string,
-    value: number
-}
-
-type XAxisItem = {
-    scaleType: string,
-    data: Array<string>
-}
+import { DateDataPoint } from "@/db/bigquery"
 
 type SeriesItem = {
-    data: Array<number>
+    dataKey: string,
+    label: string
 }
+
+type BarChartDataPoint = {
+    [key: string]: string | number; // These should all be numbers
+    date: string;
+};
 
 type BarChartData = {
-    xAxis: Array<XAxisItem>,
-    series: Array<SeriesItem>
+    dataset: BarChartDataPoint[],
+    series: SeriesItem[]
 }
 
 
 
-export function barChartData(data: Array<DataItem> = []): any {
+export function barChartData(data: Array<DateDataPoint> = []): BarChartData {
     
     const byDate = new Map<string, Map<string, number>>();
     const names = new Set<string>();
@@ -46,12 +41,12 @@ export function barChartData(data: Array<DataItem> = []): any {
     const dataset = []
 
     for (let key of keys) {
-        const datapoint: any = {
+        const datapoint: BarChartDataPoint = {
             date: key
         }
         for (let name of namesList) {
             if (byDate.get(key)?.has(name)) {
-                datapoint[name] = byDate.get(key)?.get(name)
+                datapoint[name] = byDate.get(key)!.get(name)!
             } else {
                 datapoint[name] = 0
             }

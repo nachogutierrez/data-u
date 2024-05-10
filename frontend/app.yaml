@@ -1,7 +1,17 @@
 runtime: nodejs20
 env_variables:
-  AUTH_SECRET: "{{AUTH_SECRET}}"
-  GOOGLE_CLIENT_ID: "{{GOOGLE_CLIENT_ID}}"
-  GOOGLE_CLIENT_SECRET: "{{GOOGLE_CLIENT_SECRET}}"
+  # Next js Trusted URLs
   NEXTAUTH_URL: "https://data-u-420919.uc.r.appspot.com"
   AUTH_TRUST_HOST: "https://data-u-420919.uc.r.appspot.com"
+
+  # Next.js Auth
+  AUTH_SECRET: "{{AUTH_SECRET}}"
+
+  # Google Auth
+  GOOGLE_CLIENT_ID: "{{GOOGLE_CLIENT_ID}}"
+  GOOGLE_CLIENT_SECRET: "{{GOOGLE_CLIENT_SECRET}}"
+
+  # BigQuery
+  BIGQUERY_PROJECT_ID: "{{BIGQUERY_PROJECT_ID}}"
+  BIGQUERY_CLIENT_EMAIL: "{{BIGQUERY_CLIENT_EMAIL}}"
+  BIGQUERY_PRIVATE_KEY: "{{BIGQUERY_PRIVATE_KEY}}"

@@ -2,16 +2,37 @@ import type { NextAuthConfig } from 'next-auth';
 import GoogleProvider from "next-auth/providers/google";
 import { getSecret } from '@/secret-manager';
 
+const WHITELISTED = [
+  'nachogutierrezibanez@gmail.com',
+  'ragolegal@gmail.com',
+  'n.giacomuzo@gmail.com'
+]
+
+const ADMINS = [
+  'nachogutierrezibanez@gmail.com'
+]
+
+export function isAdmin(user: string): boolean {
+  return ADMINS.includes(user)
+}
+
 export async function getAuthConfig() {
 
   return {
     callbacks: {
       authorized({ auth, request: { nextUrl } }) {
         const isLoggedIn = !!auth?.user;
-        const isOnDashboard = nextUrl.pathname.startsWith('/app');
-        if (isOnDashboard) {
-          if (isLoggedIn) return true;
-          return false; // Redirect unauthenticated users to login page
+        const isOnApp = nextUrl.pathname.startsWith('/app');
+        const isOnAdminPage = nextUrl.pathname.startsWith('/app/admin');
+
+        // Protect Admin page
+        if (isOnAdminPage && (!isLoggedIn || !auth?.user?.email || !isAdmin(auth?.user?.email))) {
+          return Response.redirect(new URL('/', nextUrl))
+        }
+
+        // Protect App
+        if (isOnApp && !isLoggedIn) {
+          return false // Redirect unauthenticated users to login page
         }
         return true;
       },
@@ -25,12 +46,7 @@ export async function getAuthConfig() {
           return false
         }
 
-        const admins = [
-          'nachogutierrezibanez@gmail.com',
-          'ragolegal@gmail.com',
-          'n.giacomuzo@gmail.com'
-        ]
-        if (!admins.includes(profile.email)) {
+        if (!WHITELISTED.includes(profile.email)) {
           return false
         }
 

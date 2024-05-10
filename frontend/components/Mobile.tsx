@@ -1,12 +1,12 @@
 "use client";
 
-import useWindowDimensions from '@/hooks/useWindowDimensions'
+import useEnvironment, { Environment } from '@/hooks/useEnvironment';
 import React from 'react'
 
 export default function Mobile({ children }: { children: any }) {
-    const { width, height } = useWindowDimensions()
+    const environment = useEnvironment()
     
-    if (width > 500) {
+    if (environment === Environment.DESKTOP) {
         return <></>
     }
 

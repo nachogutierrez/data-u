@@ -1,7 +1,7 @@
 import fs from 'fs/promises'
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
-import { BigQuery } from "@google-cloud/bigquery";
+import { BigQuery, BigQueryDate } from "@google-cloud/bigquery";
 import { getSecret } from "@/secret-manager";
 import { replacePlaceholders } from '@/lib/render';
 import TTLCache from '@isaacs/ttlcache';
@@ -12,6 +12,12 @@ const __dirname = dirname(__filename)
 
 let cachedClient: BigQuery
 const ttlCache = new TTLCache({ max: 1000, ttl: 1800000 })
+
+export type DateDataPoint = {
+    date: BigQueryDate,
+    name: string,
+    value: number
+}
 
 export async function getClient() {
 
@@ -46,4 +52,8 @@ export async function runQuery(queryName: string, placeholders = {}) {
 
     ttlCache.set(sqlQuery, rows)
     return rows
+}
+
+export async function getNewPosts(): Promise<DateDataPoint[]> {
+    return await runQuery('new-posts.sql') as DateDataPoint[]
 }

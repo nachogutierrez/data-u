@@ -1,4 +1,4 @@
-import Navbar from "./Navbar"; 
+import AppNavbar from "./AppNavbar"; 
 
 export default function NonAppLayout({
   children,
@@ -7,7 +7,7 @@ export default function NonAppLayout({
 }>) {
   return (
     <>
-        <Navbar></Navbar>
+        <AppNavbar/>
         {children}
     </>
   );

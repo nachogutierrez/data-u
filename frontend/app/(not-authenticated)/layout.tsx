@@ -1,4 +1,4 @@
-import Navbar from "./Navbar"; 
+import LandingNavbar from "./LandingNavbar"; 
 
 export default function NonAppLayout({
   children,
@@ -7,7 +7,7 @@ export default function NonAppLayout({
 }>) {
   return (
     <>
-        <Navbar></Navbar>
+        <LandingNavbar />
         {children}
     </>
   );

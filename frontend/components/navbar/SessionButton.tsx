@@ -3,8 +3,10 @@
 import { signOut, useSession } from 'next-auth/react';
 import React, { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
-import { useRouter } from 'next/navigation';
-import GoogleSignInButton from './GoogleSignInButton';
+import { usePathname, useRouter } from 'next/navigation';
+import GoogleSignInButton from '../session/GoogleSignInButton';
+import useEnvironment, { Environment } from '@/hooks/useEnvironment';
+import { isAdmin } from '@/auth.config';
 
 function DropDownMenuItem({ title, onClick = () => { } }: { title: string, onClick: any }) {
     return (
@@ -18,6 +20,8 @@ function DropDownMenuItem({ title, onClick = () => { } }: { title: string, onCli
 
 function DropDownMenu({ onClick = () => { } }) {
     const router = useRouter()
+    const pathname = usePathname()
+    const { data: session } = useSession()
 
     const navigateTo = (path: string) => () => {
         onClick()
@@ -31,7 +35,12 @@ function DropDownMenu({ onClick = () => { } }) {
 
     return (
         <ul style={{ listStyle: 'none', padding: 0 }}>
-            <DropDownMenuItem title={'Dashboard'} onClick={navigateTo('/app/welcome')} />
+            { !pathname.startsWith('/app') && (
+                <DropDownMenuItem title={'Go to App'} onClick={navigateTo('/app')} />
+            ) }
+            { pathname.startsWith('/app') && session?.user?.email && isAdmin(session?.user?.email) && (
+                <DropDownMenuItem title={'Admin'} onClick={navigateTo('/app/admin')} />
+            ) }
             <DropDownMenuItem title={'Profile'} onClick={navigateTo('/app/profile')} />
             <DropDownMenuItem title={'Sign out'} onClick={handleSignOutClick} />
         </ul>
@@ -39,6 +48,7 @@ function DropDownMenu({ onClick = () => { } }) {
 }
 
 export default function SessionButton() {
+    const environment = useEnvironment()
     const { data: session, status } = useSession()
     const isLoading = status === 'loading'
 
@@ -76,7 +86,12 @@ export default function SessionButton() {
             className="relative flex flex-col items-center">
             <div onClick={handleOnProfilePictureClick}
                 className="rounded-full overflow-hidden border-black border-2 cursor-pointer select-none">
-                {session?.user?.image && <Image src={session.user.image} width={48} height={48} alt='profile pic' />}
+                {session?.user?.image && (
+                    <Image src={session.user.image} 
+                        width={environment === Environment.DESKTOP ? 32 : 48} 
+                        height={environment === Environment.DESKTOP ? 32 : 48} 
+                        alt='profile pic' />
+                )}
             </div>
             <div className={`absolute bg-white z-50 right-0 transition-all ease-in-out duration-200 overflow-hidden origin-top-right ${isOpen ? '' : "opacity-0 scale-0"}`}
                 style={{ top: '100%', marginTop: '2px' }}>
