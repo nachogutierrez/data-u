@@ -10,6 +10,11 @@
         "mode": "REQUIRED"
     },
     {
+        "name": "type",
+        "type": "STRING",
+        "mode": "REQUIRED"
+    },
+    {
         "name": "timestamp",
         "type": "TIMESTAMP",
         "mode": "REQUIRED"
@@ -41,6 +46,11 @@
     },
     {
         "name": "address",
+        "type": "STRING",
+        "mode": "REPEATED"
+    },
+    {
+        "name": "photos",
         "type": "STRING",
         "mode": "REPEATED"
     },
