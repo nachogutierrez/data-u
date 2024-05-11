@@ -1,4 +1,4 @@
-import { DateDataPoint } from "@/db/bigquery"
+import { DateDataPoint } from "@/db/bigquery/client"
 
 type SeriesItem = {
     dataKey: string,

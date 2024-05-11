@@ -5,8 +5,18 @@
         "mode": "REQUIRED"
     },
     {
+        "name": "internal_id",
+        "type": "STRING",
+        "mode": "REQUIRED"
+    },
+    {
         "name": "timestamp",
         "type": "TIMESTAMP",
+        "mode": "REQUIRED"
+    },
+    {
+        "name": "title",
+        "type": "STRING",
         "mode": "REQUIRED"
     },
     {
@@ -30,16 +40,6 @@
         "mode": "REQUIRED"
     },
     {
-        "name": "dimensionTotal",
-        "type": "FLOAT",
-        "mode": "NULLABLE"
-    },
-    {
-        "name": "dimensionCovered",
-        "type": "FLOAT",
-        "mode": "NULLABLE"
-    },
-    {
         "name": "address",
         "type": "STRING",
         "mode": "REPEATED"
@@ -47,16 +47,21 @@
     {
         "name": "location",
         "type": "GEOGRAPHY",
-        "mode": "NULLABLE"
-    },
-    {
-        "name": "maps",
-        "type": "STRING",
-        "mode": "NULLABLE"
+        "mode": "REQUIRED"
     },
     {
         "name": "link",
         "type": "STRING",
         "mode": "REQUIRED"
+    },
+    {
+        "name": "dimension_total_m2",
+        "type": "FLOAT",
+        "mode": "NULLABLE"
+    },
+    {
+        "name": "dimension_covered_m2",
+        "type": "FLOAT",
+        "mode": "NULLABLE"
     }
 ]

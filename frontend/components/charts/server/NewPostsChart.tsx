@@ -1,5 +1,5 @@
 import React from 'react'
-import { DateDataPoint, getNewPosts } from '@/db/bigquery'
+import { DateDataPoint, getNewPosts } from '@/db/bigquery/client'
 import { barChartData } from '@/lib/charts'
 import DateBarChart from '../client/DateBarChart'
 

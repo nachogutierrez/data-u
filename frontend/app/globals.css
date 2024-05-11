@@ -32,6 +32,9 @@ nav {
 nav .left {
   @apply flex space-x-4 items-center;
 }
+nav .center {
+  @apply flex space-x-4 items-center;
+}
 nav .right {
   @apply flex space-x-4 items-center;
 }

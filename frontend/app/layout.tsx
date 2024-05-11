@@ -19,7 +19,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${font.className} m-0 flex flex-wrap items-center justify-center`}>
+      <body className={`${font.className} m-0 flex flex-col justify-center overscroll-none overflow-hidden`} style={{ height: '100vh' }}>
         <SessionProvider>
           {children}
         </SessionProvider>
