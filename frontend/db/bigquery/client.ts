@@ -5,7 +5,7 @@ import { BigQuery, BigQueryDate } from "@google-cloud/bigquery";
 import { getSecret } from "@/secret-manager";
 import { replacePlaceholders } from '@/lib/render';
 import TTLCache from '@isaacs/ttlcache';
-import { Coordinate, DataPoint, Filters, OrderByDirection, OrderByOption } from './types';
+import { Coordinate, DataPoint, Filters, Operation, OrderByDirection, OrderByOption, PropertyType } from './types';
 
 // Get the file path of the current script
 const __filename = fileURLToPath(import.meta.url);
@@ -22,12 +22,16 @@ export type DateDataPoint = {
 
 export async function getClient() {
 
+    const privateKey = await getSecret('BIGQUERY_PRIVATE_KEY')
+
+    const decodedPrivateKey = Buffer.from(privateKey, 'base64').toString('utf-8')
+
     if (!cachedClient) {
         cachedClient = new BigQuery({
             projectId: await getSecret('BIGQUERY_PROJECT_ID'),
             credentials: {
                 client_email: await getSecret('BIGQUERY_CLIENT_EMAIL'),
-                private_key: (await getSecret('BIGQUERY_PRIVATE_KEY')).replace(/\\n/g, '\n'),
+                private_key: decodedPrivateKey.replace(/\\n/g, '\n'),
             },
         });
     }
@@ -85,6 +89,12 @@ export async function getDataPointsLatest(filters: Filters): Promise<DataPoint[]
     }
     if (filters.polygon) {
         conditions.push(`ST_CONTAINS( ST_GEOGFROMTEXT('POLYGON((${filters.polygon.map((coord: Coordinate) => `${coord.lng.toFixed(3)} ${coord.lat.toFixed(3)}`).join(', ')}))'), location )`)
+    }
+    if (filters.type !== undefined) {
+        conditions.push(`type = '${PropertyType[filters.type].toLocaleLowerCase()}'`)
+    }
+    if (filters.operation !== undefined) {
+        conditions.push(`operation = '${Operation[filters.operation].toLocaleLowerCase()}'`)
     }
 
     if (conditions.length > 0) {

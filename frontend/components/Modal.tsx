@@ -11,8 +11,9 @@ export default function Modal({ isOpen, closeModal, children }: { isOpen: boolea
     };
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-center items-center"
-            onClick={closeModal}>
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
+            onClick={closeModal}
+            style={{ zIndex: '2000' }}>
             <div className="bg-white p-5 rounded-lg shadow-lg m-4"
                 onClick={handleModalContentClick} style={{ minWidth: '300px', maxWidth: '90%' }}>
                 {children}

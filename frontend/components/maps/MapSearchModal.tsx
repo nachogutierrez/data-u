@@ -4,11 +4,7 @@ import React, { useState } from 'react';
 import { GoogleMap, Polygon, useJsApiLoader } from '@react-google-maps/api';
 import { calculateZoomLevel, strictOptions } from '@/lib/maps';
 import Modal from '@/components/Modal';
-
-const containerStyle = {
-  width: '600px',
-  height: '400px'
-};
+import useEnvironment, { Environment } from '@/hooks/useEnvironment';
 
 export default function MapSearchModal({
   googleMapsApiKey,
@@ -29,6 +25,13 @@ export default function MapSearchModal({
   const [mapCenter, setMapCenter] = useState({ lat: -34.6037181, lng: -58.38153 });
   const [zoom, setZoom] = useState(10); // Start with a world view
   const [mapKey, setMapKey] = useState(0); // State to control re-rendering of the map
+  
+  const environment = useEnvironment()
+
+  const containerStyle = {
+    width: environment === Environment.DESKTOP ? '600px': '300px',
+    height: environment === Environment.DESKTOP ? '400px': '200px',
+  };
 
   const handleSearch = async () => {
     try {

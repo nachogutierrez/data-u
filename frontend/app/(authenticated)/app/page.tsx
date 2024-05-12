@@ -5,8 +5,9 @@ import { getSecret } from '@/secret-manager';
 import PolygonMap from '@/components/maps/PolygonMap';
 import { runQuery as runNominatimQuery } from '@/lib/nominatim';
 import { getDataPointsLatest } from '@/db/bigquery/client';
-import { Filters, OrderByDirection, OrderByOption } from '@/db/bigquery/types';
+import { Filters, Operation, OrderByDirection, OrderByOption, PropertyType } from '@/db/bigquery/types';
 import DataPointsTable from '@/components/data/DataPointsTable';
+import DataPointsTableFilters from '@/components/data/DataPointsTableFilters';
 
 type AppPageProps = {
   searchParams?: { [key: string]: string | string[] | undefined }
@@ -100,6 +101,8 @@ export default async function AppPage(props: AppPageProps) {
 
   validateIsEnum('obo', props.searchParams?.obo as string, OrderByOption)
   validateIsEnum('obd', props.searchParams?.obd as string, OrderByDirection)
+  validateIsEnum('t', props.searchParams?.t as string, PropertyType)
+  validateIsEnum('op', props.searchParams?.op as string, Operation)
 
   validateLocationQuery('q', props.searchParams?.q as string)
 
@@ -116,6 +119,8 @@ export default async function AppPage(props: AppPageProps) {
   const maxDimensionCovered = Number(props.searchParams?.maxdc)
   const orderByOption = OrderByOption[OrderByOption[Number(props.searchParams?.obo)] as keyof typeof OrderByOption] || OrderByOption.PRICE_M2
   const orderByDirection = OrderByDirection[OrderByDirection[Number(props.searchParams?.obo)] as keyof typeof OrderByDirection] || OrderByDirection.ASC
+  const type = PropertyType[PropertyType[Number(props.searchParams?.t)] as keyof typeof PropertyType]
+  const operation = Operation[Operation[Number(props.searchParams?.op)] as keyof typeof Operation]
   let mapPolygon = undefined
 
   if (locationQueryBase64 !== undefined) {
@@ -132,6 +137,8 @@ export default async function AppPage(props: AppPageProps) {
     ...maybe(() => minPrice || maxPrice, 'price', { ...maybe(() => minPrice, 'min', minPrice), ...maybe(() => maxPrice, 'max', maxPrice) }),
     ...maybe(() => minPriceM2 || maxPriceM2, 'priceM2', { ...maybe(() => minPriceM2, 'min', minPriceM2), ...maybe(() => maxPriceM2, 'max', maxPriceM2) }),
     ...maybe(() => minDimensionCovered || maxDimensionCovered, 'dimensionCovered', { ...maybe(() => minDimensionCovered, 'min', minDimensionCovered), ...maybe(() => maxDimensionCovered, 'max', maxDimensionCovered) }),
+    ...maybe(() => type !== undefined, 'type', type),
+    ...maybe(() => operation !== undefined, 'operation', operation),
     pagination: { pageNumber, pageSize },
     sort: {
       option: orderByOption,
@@ -139,13 +146,18 @@ export default async function AppPage(props: AppPageProps) {
     }
   }
 
+  console.log({ filters });
+  
+
+  // TODO: enable data
   const data = await getDataPointsLatest(filters)
+
+  // await new Promise(resolve => setTimeout(resolve, 1000))
 
   return (
     <Page>
+      <DataPointsTableFilters googleMapsApiKey={googleMapsApiKey} />
       <DataPointsTable data={data}></DataPointsTable>
-      {/* <MapSearchButton googleMapsApiKey={googleMapsApiKey}></MapSearchButton> */}
-      {/* <PolygonMap googleMapsApiKey={googleMapsApiKey} /> */}
     </Page>
   )
 }

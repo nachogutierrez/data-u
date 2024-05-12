@@ -31,7 +31,7 @@ export default function AppNavbar() {
                 <Link href={'/app/charts'} className={linkClassNames(pathname, '/app/charts')}>Charts</Link>
             </div>
 
-            <div className="center text-sm">
+            {/* <div className="center text-sm">
                 <div className="flex items-center border border-gray-300 rounded-lg overflow-hidden pl-4 w-96">
                     <input
                         type="text"
@@ -44,7 +44,7 @@ export default function AppNavbar() {
                         Search
                     </button>
                 </div>
-            </div>
+            </div> */}
 
             <div className="right">
                 <SessionButton />

@@ -1,6 +1,6 @@
+
 import type { Metadata } from "next";
 import { Rubik } from "next/font/google";
-// import Navbar from "./Navbar"; 
 
 import "@/app/globals.css";
 import { SessionProvider } from "next-auth/react";
@@ -18,8 +18,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${font.className} m-0 flex flex-col justify-center overscroll-none overflow-hidden`} style={{ height: '100vh' }}>
+    <html lang="en" className="h-full">
+      <body className={`${font.className} m-0 flex flex-col justify-center overscroll-none h-full`}>
         <SessionProvider>
           {children}
         </SessionProvider>

@@ -5,7 +5,7 @@ export type Coordinate = {
     lng: number
 }
 
-export type Filter = {
+export type RangeFilter = {
     min?: number,
     max?: number
 }
@@ -23,6 +23,9 @@ export type Pagination = {
     pageNumber: number
 }
 
+export enum Operation { SALE, RENT }
+export enum PropertyType { HOUSE, APARTMENT, RURAL, COMMERCIAL, PARKING, LAND }
+
 export type Filters = {
     // Required
     pagination: Pagination,
@@ -30,22 +33,26 @@ export type Filters = {
 
     // Optional
     polygon?: Coordinate[],
-    price?: Filter,
-    priceM2?: Filter,
-    dimensionCovered?: Filter,
+    price?: RangeFilter,
+    priceM2?: RangeFilter,
+    dimensionCovered?: RangeFilter,
+    operation?: Operation,
+    type?: PropertyType
 }
 
 export type DataPoint = {
     // Required
     id: string,
     internal_id: string,
+    type: string,
     timestamp: BigQueryTimestamp,
     title: string,
     host: string,
     price: number,
     currency: string,
     operation: string,
-    address: string,
+    address: string[],
+    photos: string[],
     location: Geography,
     link: string,
 
