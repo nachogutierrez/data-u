@@ -83,6 +83,14 @@ export async function getDataPointsLatest(filters: Filters): Promise<DataPoint[]
         if (filters.priceM2.min) conditions.push(`price / dimension_covered_m2 >= ${filters.priceM2.min}`)
         if (filters.priceM2.max) conditions.push(`price / dimension_covered_m2 <= ${filters.priceM2.max}`)
     }
+    if (filters.priceDowns) {
+        if (filters.priceDowns.min) conditions.push(`last_30d_price_downs >= ${filters.priceDowns.min}`)
+        if (filters.priceDowns.max) conditions.push(`last_30d_price_downs <= ${filters.priceDowns.max}`)
+    }
+    if (filters.priceDelta) {
+        if (filters.priceDelta.min) conditions.push(`last_30d_delta_price >= ${filters.priceDelta.min}`)
+        if (filters.priceDelta.max) conditions.push(`last_30d_delta_price <= ${filters.priceDelta.max}`)
+    }
     if (filters.dimensionCovered) {
         if (filters.dimensionCovered.min) conditions.push(`dimension_covered_m2 >= ${filters.dimensionCovered.min}`)
         if (filters.dimensionCovered.max) conditions.push(`dimension_covered_m2 <= ${filters.dimensionCovered.max}`)

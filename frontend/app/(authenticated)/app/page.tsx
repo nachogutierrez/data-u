@@ -14,6 +14,7 @@ type AppPageProps = {
 }
 
 const integerRegex = /^[1-9][0-9]*|0$/
+const floatRegex = /^[0-9]\.[0-9]{2}$/
 const locationQueryRegex = /^[a-zA-Z ,]+$/
 
 function validateIsIntegerInRange(name: string, value: string, min: number|undefined, max: number|undefined) {
@@ -31,6 +32,25 @@ function validateIsIntegerInRange(name: string, value: string, min: number|undef
   }
 
   if (max &&intValue > max) {
+    throw new Error(`Expected '${name}' to be at most ${max}. Got '${value}'`)
+  }
+}
+
+function validateIsFloatInRange(name: string, value: string, min: number|undefined, max: number|undefined) {
+  if (value === undefined) {
+    return
+  }
+
+  if (!value.match(floatRegex)) {
+    throw new Error(`Expected '${name}' to be a float. Got '${value}'`)
+  }
+  const floatValue = parseFloat(value)
+
+  if (min && floatValue < min) {
+    throw new Error(`Expected '${name}' to be at least ${min}. Got '${value}'`)
+  }
+
+  if (max && floatValue > max) {
     throw new Error(`Expected '${name}' to be at most ${max}. Got '${value}'`)
   }
 }
@@ -94,6 +114,10 @@ export default async function AppPage(props: AppPageProps) {
   validateIsIntegerInRange('maxdc', props.searchParams?.maxdc as string, 1, 999999999)
   validateIsIntegerInRange('obo', props.searchParams?.obo as string, 0, undefined) // Enum values
   validateIsIntegerInRange('obd', props.searchParams?.obd as string, 0, undefined) // Enum values
+  validateIsIntegerInRange('minpdo', props.searchParams?.mindc as string, 0, undefined)
+  validateIsIntegerInRange('maxpdo', props.searchParams?.maxdc as string, 0, undefined)
+  validateIsFloatInRange('minpde', props.searchParams?.mindc as string, 0, undefined)
+  validateIsFloatInRange('maxpde', props.searchParams?.maxdc as string, 0, undefined)
 
   validateIntegerDifference('minp', 'maxp', props.searchParams?.minp as string, props.searchParams?.maxp as string)
   validateIntegerDifference('minpsm', 'maxpsm', props.searchParams?.minpsm as string, props.searchParams?.maxpsm as string)
@@ -117,6 +141,10 @@ export default async function AppPage(props: AppPageProps) {
   const maxPriceM2 = Number(props.searchParams?.maxpsm)
   const minDimensionCovered = Number(props.searchParams?.mindc)
   const maxDimensionCovered = Number(props.searchParams?.maxdc)
+  const minPriceDowns = Number(props.searchParams?.minpdo)
+  const maxPriceDowns = Number(props.searchParams?.maxpdo)
+  const minPriceDelta = parseFloat(props.searchParams?.minpde as any)
+  const maxPriceDelta = parseFloat(props.searchParams?.maxpde as any)
   const orderByOption = OrderByOption[OrderByOption[Number(props.searchParams?.obo)] as keyof typeof OrderByOption] || OrderByOption.PRICE_M2
   const orderByDirection = OrderByDirection[OrderByDirection[Number(props.searchParams?.obo)] as keyof typeof OrderByDirection] || OrderByDirection.ASC
   const type = PropertyType[PropertyType[Number(props.searchParams?.t)] as keyof typeof PropertyType]
@@ -135,6 +163,8 @@ export default async function AppPage(props: AppPageProps) {
   const filters: Filters = {
     ...maybe(() => mapPolygon, 'polygon', mapPolygon),
     ...maybe(() => minPrice || maxPrice, 'price', { ...maybe(() => minPrice, 'min', minPrice), ...maybe(() => maxPrice, 'max', maxPrice) }),
+    ...maybe(() => minPriceDowns || maxPriceDowns, 'priceDowns', { ...maybe(() => minPriceDowns, 'min', minPriceDowns), ...maybe(() => maxPriceDowns, 'max', maxPriceDowns) }),
+    ...maybe(() => minPriceDelta || maxPriceDelta, 'priceDelta', { ...maybe(() => minPriceDelta, 'min', minPriceDelta), ...maybe(() => maxPriceDelta, 'max', maxPriceDelta) }),
     ...maybe(() => minPriceM2 || maxPriceM2, 'priceM2', { ...maybe(() => minPriceM2, 'min', minPriceM2), ...maybe(() => maxPriceM2, 'max', maxPriceM2) }),
     ...maybe(() => minDimensionCovered || maxDimensionCovered, 'dimensionCovered', { ...maybe(() => minDimensionCovered, 'min', minDimensionCovered), ...maybe(() => maxDimensionCovered, 'max', maxDimensionCovered) }),
     ...maybe(() => type !== undefined, 'type', type),

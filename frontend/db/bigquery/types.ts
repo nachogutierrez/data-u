@@ -35,6 +35,8 @@ export type Filters = {
     polygon?: Coordinate[],
     price?: RangeFilter,
     priceM2?: RangeFilter,
+    priceDowns?: RangeFilter,
+    priceDelta?: RangeFilter,
     dimensionCovered?: RangeFilter,
     operation?: Operation,
     type?: PropertyType
@@ -58,5 +60,8 @@ export type DataPoint = {
 
     // Optional
     dimension_total_m2?: number,
-    dimension_covered_m2?: number
+    dimension_covered_m2?: number,
+    last_30d_price_downs?: number,
+    last_30d_delta_price?: number,
+    first_seen?: BigQueryTimestamp
 }

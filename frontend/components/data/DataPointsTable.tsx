@@ -9,6 +9,30 @@ type DataPointsTableProps = {
     data: DataPoint[]
 }
 
+function timeAgo(dateString: any) {
+    const date: any = new Date(dateString);
+    const now: any = new Date();
+    const diffInSeconds = Math.floor((now - date) / 1000);
+
+    const units = [
+        { name: "y", seconds: 31536000 },
+        { name: "mo", seconds: 2592000 },
+        { name: "d", seconds: 86400 },
+        { name: "h", seconds: 3600 },
+        { name: "m", seconds: 60 },
+        { name: "s", seconds: 1 },
+    ];
+
+    for (const unit of units) {
+        const amount = Math.floor(diffInSeconds / unit.seconds);
+        if (amount >= 1) {
+            return `${amount}${unit.name} ago`;
+        }
+    }
+
+    return 'just now';
+}
+
 export default function DataPointsTable(props: DataPointsTableProps) {
 
     const { data } = props
@@ -26,7 +50,11 @@ export default function DataPointsTable(props: DataPointsTableProps) {
                                 <th scope="col" className="py-3 px-6">Type</th>
                                 <th scope="col" className="py-3 px-6">Price</th>
                                 <th scope="col" className="py-3 px-6">Price per m2</th>
-                                <th scope="col" className="py-3 px-6">Dimension Covered (m2)</th>
+                                <th scope="col" className="py-3 px-6">Dimension (m2)</th>
+                                <th scope="col" className="py-3 px-6">Price downs</th>
+                                <th scope="col" className="py-3 px-6">Price delta (%)</th>
+                                <th scope="col" className="py-3 px-6">First seen</th>
+                                <th scope="col" className="py-3 px-6">Last seen</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -51,6 +79,10 @@ export default function DataPointsTable(props: DataPointsTableProps) {
                                     <td className="py-4 px-6 select-none">{row.price} {row.currency.toUpperCase()}</td>
                                     <td className="py-4 px-6 select-none">{(row.price / row.dimension_covered_m2!).toFixed(2)} {row.currency.toUpperCase()}</td>
                                     <td className="py-4 px-6 select-none">{row.dimension_covered_m2}</td>
+                                    <td className="py-4 px-6 select-none">{row.last_30d_price_downs}</td>
+                                    <td className="py-4 px-6 select-none">{(row.last_30d_delta_price as any * 100).toFixed(2)}%</td>
+                                    <td className="py-4 px-6 select-none">{timeAgo(row.first_seen?.value)}</td>
+                                    <td className="py-4 px-6 select-none">{timeAgo(row.timestamp?.value)}</td>
                                 </tr>
                             ))}
                         </tbody>
@@ -65,7 +97,9 @@ export default function DataPointsTable(props: DataPointsTableProps) {
                                 <th scope="col" className="py-1 px-3"><span className='invisible'>Sou</span></th>
                                 <th scope="col" className="py-1 px-3">Title</th>
                                 <th scope="col" className="py-1 px-3">Price</th>
-                                <th scope="col" className="py-1 px-3">Dimension Covered (m2)</th>
+                                <th scope="col" className="py-1 px-3">Dimension (m2)</th>
+                                {/* <th scope="col" className="py-1 px-3">PDowns</th> */}
+                                {/* <th scope="col" className="py-1 px-3">PDelta</th> */}
                             </tr>
                         </thead>
                         <tbody>
@@ -87,6 +121,8 @@ export default function DataPointsTable(props: DataPointsTableProps) {
                                     <td className="py-2 px-3 select-none">{row.title}</td>
                                     <td className="py-2 px-3 select-none no-underline">{row.price} {row.currency.toUpperCase()}</td>
                                     <td className="py-2 px-3 select-none no-underline">{row.dimension_covered_m2}</td>
+                                    {/* <td className="py-4 px-6 select-none">{row.last_30d_price_downs}</td> */}
+                                    {/* <td className="py-4 px-6 select-none">{(row.last_30d_delta_price as any * 100).toFixed(2)}%</td> */}
                                 </tr>
                             ))}
                         </tbody>

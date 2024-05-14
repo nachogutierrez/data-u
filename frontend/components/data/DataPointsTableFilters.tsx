@@ -59,6 +59,22 @@ export default function DataPointsTableFilters(props: DataPointsTableFiltersProp
             min={1}
             max={999999999} />
     )
+    let priceDownsFilter = (
+        <RangeFilter
+            name='Price downs'
+            minQueryParameterName='minpdo'
+            maxQueryParameterName='maxpdo'
+            min={0}
+            max={100} />
+    )
+    let priceDeltaFilter = (
+        <RangeFilter
+            name='Price delta'
+            minQueryParameterName='minpde'
+            maxQueryParameterName='maxpde'
+            min={0}
+            max={100} />
+    )
 
     return (
         <div className="relative">
@@ -75,6 +91,8 @@ export default function DataPointsTableFilters(props: DataPointsTableFiltersProp
                         <ExpandableFilterButton name='Prices'>
                             {priceFilter}
                             {priceM2Filter}
+                            {priceDownsFilter}
+                            {priceDeltaFilter}
                         </ExpandableFilterButton>
                         <ExpandableFilterButton name='Dimensions'>
                             {dimensionFilter}
@@ -89,6 +107,8 @@ export default function DataPointsTableFilters(props: DataPointsTableFiltersProp
                             {typeFilter}
                             {priceFilter}
                             {priceM2Filter}
+                            {priceDownsFilter}
+                            {priceDeltaFilter}
                             {dimensionFilter}
                         </ExpandableFilterButton>
                     </FilterGroup>
