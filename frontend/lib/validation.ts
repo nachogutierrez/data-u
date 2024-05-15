@@ -2,10 +2,10 @@ import { Filters, Operation, OrderByDirection, OrderByOption, PropertyType } fro
 import { runQuery as runNominatimQuery } from '@/lib/nominatim';
 
 const integerRegex = /^[1-9][0-9]*|0$/;
-const floatRegex = /^[0-9]\.[0-9]{2}$/;
+const floatRegex = /^[0-9]+\.[0-9]{2}$/;
 const locationQueryRegex = /^[a-zA-Z ,]+$/;
 
-function validateIsIntegerInRange(name: string, value: string, min?: number, max?: number) {
+export function validateIsIntegerInRange(name: string, value: string, min?: number, max?: number) {
   if (value === undefined) return;
 
   if (!value.match(integerRegex)) {
@@ -22,7 +22,7 @@ function validateIsIntegerInRange(name: string, value: string, min?: number, max
   }
 }
 
-function validateIsFloatInRange(name: string, value: string, min?: number, max?: number) {
+export function validateIsFloatInRange(name: string, value: string, min?: number, max?: number) {
   if (value === undefined) return;
 
   if (!value.match(floatRegex)) {
@@ -39,7 +39,7 @@ function validateIsFloatInRange(name: string, value: string, min?: number, max?:
   }
 }
 
-function validateIntegerDifference(nameA: string, nameB: string, valueA: string, valueB: string) {
+export function validateIntegerDifference(nameA: string, nameB: string, valueA: string, valueB: string) {
   if (valueA === undefined || valueB === undefined) return;
 
   const a = Number(valueA);
@@ -50,7 +50,7 @@ function validateIntegerDifference(nameA: string, nameB: string, valueA: string,
   }
 }
 
-function validateIsEnum(name: string, value: string, enumType: any) {
+export function validateIsEnum(name: string, value: string, enumType: any) {
   if (value === undefined) return;
 
   const num = Number(value);
@@ -60,17 +60,17 @@ function validateIsEnum(name: string, value: string, enumType: any) {
   }
 }
 
-function validateLocationQuery(name: string, value: string) {
+export function validateLocationQuery(name: string, value: string) {
   if (value === undefined) return;
 
   const decoded = Buffer.from(value, 'base64').toString('utf-8');
 
-  if (!decoded.match(locationQueryRegex)) {
-    throw new Error(`Expected ${name} to match regex ${locationQueryRegex}. Make sure ${name} is base64-encoded.`);
-  }
-
   if (decoded.length === 0) {
     throw new Error(`Location query can't be empty.`);
+  }
+
+  if (!decoded.match(locationQueryRegex)) {
+    throw new Error(`Expected ${name} to match regex ${locationQueryRegex}. Make sure ${name} is base64-encoded.`);
   }
 
   if (decoded.length > 100) {
@@ -106,6 +106,10 @@ export function validateSearchParams(params: { [key: string]: string | string[] 
   validateLocationQuery('q', params?.q as string);
 }
 
+export function isN(value: any) {
+  return typeof value === 'number' && !isNaN(value);
+}
+
 export async function extractFilters(params: { [key: string]: string | string[] | undefined } | undefined): Promise<Filters> {
   const locationQueryBase64 = params?.q as string;
   const pageSize = Number(params?.ps) || 100;
@@ -136,11 +140,11 @@ export async function extractFilters(params: { [key: string]: string | string[] 
 
   const filters: Filters = {
     ...maybe(() => mapPolygon, 'polygon', mapPolygon),
-    ...maybe(() => minPrice || maxPrice, 'price', { ...maybe(() => minPrice, 'min', minPrice), ...maybe(() => maxPrice, 'max', maxPrice) }),
-    ...maybe(() => minPriceDowns || maxPriceDowns, 'priceDowns', { ...maybe(() => minPriceDowns, 'min', minPriceDowns), ...maybe(() => maxPriceDowns, 'max', maxPriceDowns) }),
-    ...maybe(() => minPriceDelta || maxPriceDelta, 'priceDelta', { ...maybe(() => minPriceDelta, 'min', minPriceDelta), ...maybe(() => maxPriceDelta, 'max', maxPriceDelta) }),
-    ...maybe(() => minPriceM2 || maxPriceM2, 'priceM2', { ...maybe(() => minPriceM2, 'min', minPriceM2), ...maybe(() => maxPriceM2, 'max', maxPriceM2) }),
-    ...maybe(() => minDimensionCovered || maxDimensionCovered, 'dimensionCovered', { ...maybe(() => minDimensionCovered, 'min', minDimensionCovered), ...maybe(() => maxDimensionCovered, 'max', maxDimensionCovered) }),
+    ...maybe(() => isN(minPrice) || isN(maxPrice), 'price', { ...maybe(() => isN(minPrice), 'min', minPrice), ...maybe(() => isN(maxPrice), 'max', maxPrice) }),
+    ...maybe(() => isN(minPriceDowns) || isN(maxPriceDowns), 'priceDowns', { ...maybe(() => isN(minPriceDowns), 'min', minPriceDowns), ...maybe(() => isN(maxPriceDowns), 'max', maxPriceDowns) }),
+    ...maybe(() => isN(minPriceDelta) || isN(maxPriceDelta), 'priceDelta', { ...maybe(() => isN(minPriceDelta), 'min', minPriceDelta), ...maybe(() => isN(maxPriceDelta), 'max', maxPriceDelta) }),
+    ...maybe(() => isN(minPriceM2) || isN(maxPriceM2), 'priceM2', { ...maybe(() => isN(minPriceM2), 'min', minPriceM2), ...maybe(() => isN(maxPriceM2), 'max', maxPriceM2) }),
+    ...maybe(() => isN(minDimensionCovered) || isN(maxDimensionCovered), 'dimensionCovered', { ...maybe(() => isN(minDimensionCovered), 'min', minDimensionCovered), ...maybe(() => isN(maxDimensionCovered), 'max', maxDimensionCovered) }),
     ...maybe(() => type !== undefined, 'type', type),
     ...maybe(() => operation !== undefined, 'operation', operation),
     pagination: { pageNumber, pageSize },

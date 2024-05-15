@@ -22,8 +22,6 @@ export default async function AppPage(props: AppPageProps) {
   // Extract filters from search params
   const filters = await extractFilters(props.searchParams);
 
-  console.log({ filters });
-
   // Fetch data points
   const data = await getDataPointsLatest(filters);
 

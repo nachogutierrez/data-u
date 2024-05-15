@@ -1,4 +1,9 @@
+// utils.ts
 export function timeAgo(dateString: any) {
+    if (!dateString || isNaN(Date.parse(dateString))) {
+        return 'just now';
+    }
+
     const date: any = new Date(dateString);
     const now: any = new Date();
     const diffInSeconds = Math.floor((now - date) / 1000);
