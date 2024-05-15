@@ -2,7 +2,6 @@ import React from 'react';
 
 import Page from '@/components/Page';
 import { getSecret } from '@/secret-manager';
-import PolygonMap from '@/components/maps/PolygonMap';
 import { runQuery as runNominatimQuery } from '@/lib/nominatim';
 import { getDataPointsLatest } from '@/db/bigquery/client';
 import { Filters, Operation, OrderByDirection, OrderByOption, PropertyType } from '@/db/bigquery/types';
