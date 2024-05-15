@@ -16,11 +16,6 @@ type RangeFilterProps = {
     isTransitionPending?: boolean
 }
 
-type FilterProps = {
-    setFilterState: any,
-    filterState: any
-}
-
 export default function RangeFilter(props: RangeFilterProps) {
 
     const {

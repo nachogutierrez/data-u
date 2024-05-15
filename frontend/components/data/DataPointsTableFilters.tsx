@@ -3,7 +3,6 @@
 import React from 'react'
 import RangeFilter from './RangeFilter';
 import LocationFilter from './LocationFilter';
-import EnumFilter from './SelectFilter';
 import ExpandableFilterButton from './ExpandableFilterButton';
 import FilterGroup from './FilterGroup';
 import SelectFilter from './SelectFilter';
