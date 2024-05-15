@@ -1,6 +1,6 @@
 import React from 'react'
 
-import NewPostsChart from '@/components/charts/server/NewPostsChart';
+import NewPostsChart from '@/components/charts/NewPostsChart';
 import Page from '@/components/Page';
 
 export default async function ChartsPage() {

@@ -1,11 +1,9 @@
 import React from 'react';
-
 import Page from '@/components/Page';
 import { getSecret } from '@/secret-manager';
-import { runQuery as runNominatimQuery } from '@/lib/nominatim';
 import { getDataPointsLatest } from '@/db/bigquery/client';
-import DataPointsTable from '@/components/data/DataPointsTable';
-import DataPointsTableFilters from '@/components/data/DataPointsTableFilters';
+import DataPointsTable from '@/components/table/DataPointsTable';
+import DataPointsTableFilters from '@/components/table/DataPointsTableFilters';
 import { validateSearchParams, extractFilters } from '@/lib/validation';
 
 type AppPageProps = {

@@ -2,14 +2,11 @@
 
 import React from 'react'
 import { BarChart } from '@mui/x-charts';
-// import useWindowDimensions from '@/hooks/useWindowDimensions';
 import Mobile from '@/components/Mobile';
 import Desktop from '@/components/Desktop';
 
 export default function DateBarChart({ title, chartData }: { title: string, chartData: any }) {
     const { dataset, series } = chartData
-
-    // const { width, height } = useWindowDimensions()
 
     return (
         <div className="card shadow-xl inline-block">

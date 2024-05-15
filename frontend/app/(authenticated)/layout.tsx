@@ -1,4 +1,4 @@
-import AppNavbar from "./AppNavbar"; 
+import AppNavbar from "@/components/navbar/AppNavbar"; 
 
 export default function NonAppLayout({
   children,

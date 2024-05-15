@@ -1,4 +1,4 @@
-import LandingNavbar from "./LandingNavbar"; 
+import LandingNavbar from "@/components/navbar/LandingNavbar"; 
 
 export default function NonAppLayout({
   children,
