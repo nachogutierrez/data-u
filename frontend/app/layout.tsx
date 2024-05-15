@@ -19,6 +19,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="h-full">
+      <head>
+      <link rel="icon" type="image/png" sizes="32x32" href="/logo/homewatch-32x32.png"/>
+      </head>
       <body className={`${font.className} m-0 flex flex-col justify-center overscroll-none h-full`}>
         <SessionProvider>
           {children}
