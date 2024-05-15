@@ -48,7 +48,29 @@ function simplifyPolygon(coordinates: any, tolerance: number, highQuality: boole
     const points = coordinates.map((coord: any) => ({ x: coord.lng, y: coord.lat }));
 
     // Simplify the points
-    const simplified = simplify(points, tolerance, highQuality);
+    let simplified = simplify(points, tolerance, highQuality);
+
+    const cache = new Set()
+
+    // Filter out consecutive duplicate points
+    simplified = simplified.filter((pt: any, index: number) => {
+        const { x, y } = pt
+        const key = `${x.toFixed(3)}-${y.toFixed(3)}`
+        if (cache.has(key)) {
+            return false
+        }
+        cache.add(key)
+        return true
+    });
+
+    // Ensure the polygon remains closed by appending the first point to the end if necessary
+    if (simplified.length > 0) {
+        const firstPt = simplified[0];
+        const lastPt = simplified[simplified.length - 1];
+        if (firstPt.x !== lastPt.x || firstPt.y !== lastPt.y) {
+            simplified.push(firstPt);
+        }
+    }
 
     // Convert back to the original format if necessary
     return simplified.map(pt => ({ lat: pt.y, lng: pt.x }));
@@ -83,12 +105,9 @@ export async function runQuery(locationQuery: string): Promise<NominatimResponse
     const areaKm2 = calculateSurfaceKm2(polygon)
     const tolerance = toleranceBinarySearch(polygon, 50)
 
-    // const newZoom = calculateZoomLevel(data.boundingbox.map(parseFloat), 600, 400)
-
     polygon = simplifyPolygon(polygon, tolerance, true)
     const boundingbox = data.boundingbox.map(parseFloat)
     const center = { lat: parseFloat(data.lat), lng: parseFloat(data.lon) }
-    // setMapCenter({ lat: parseFloat(data.lat), lng: parseFloat(data.lon) })
 
     return {
         polygon,
