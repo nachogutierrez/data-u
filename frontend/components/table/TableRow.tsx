@@ -8,34 +8,63 @@ type TableRowProps = {
     isMobile?: boolean;
 };
 
-const TableRow: React.FC<TableRowProps> = ({ row, isMobile = false }) => (
-    <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 transition-all duration-100 ease-in-out hover:bg-gray-700 cursor-pointer">
-        <td className="px-6 py-4 flex justify-start">
-            <a href={row.link} target="_blank" rel="noopener noreferrer">
-                <Image
-                    src={`/logo/r3m4x.png`}
-                    width={24}
-                    height={24}
-                    alt='logo'
-                    className="transition-transform duration-100 ease-in-out transform hover:scale-110"
-                />
-            </a>
-        </td>
-        <td className="py-4 px-6 select-none">{row.title}</td>
-        <td className="py-4 px-6 select-none">{row.price} {row.currency.toUpperCase()}</td>
-        <td className="py-4 px-6 select-none">{row.dimension_covered_m2}</td>
-        {!isMobile && (
-            <>
-                <td className="py-4 px-6 select-none">{row.operation}</td>
-                <td className="py-4 px-6 select-none">{row.type}</td>
-                <td className="py-4 px-6 select-none">{(row.price / row.dimension_covered_m2!).toFixed(2)} {row.currency.toUpperCase()}</td>
-                <td className="py-4 px-6 select-none">{row.last_30d_price_downs}</td>
-                <td className="py-4 px-6 select-none">{(row.last_30d_delta_price as any * 100).toFixed(2)}%</td>
-                <td className="py-4 px-6 select-none">{timeAgo(row.first_seen?.value)}</td>
-                <td className="py-4 px-6 select-none">{timeAgo(row.timestamp?.value)}</td>
-            </>
-        )}
-    </tr>
-);
+const LogoTableCell = ({ link }: { link: string }) => (
+    <td className="px-6 py-4 flex justify-start">
+        <a href={link} target="_blank" rel="noopener noreferrer">
+            <Image
+                src={`/logo/r3m4x.png`}
+                width={24}
+                height={24}
+                alt='logo'
+                className="transition-transform duration-100 ease-in-out transform hover:scale-110"
+            />
+        </a>
+    </td>
+)
+
+const TableCell = ({ value }: { value: string | number }) => <td className="py-4 px-6 select-none">{value}</td>
+
+const TableRow: React.FC<TableRowProps> = ({ row, isMobile = false }) => {
+
+    const logoCell = <LogoTableCell link={row.link} />
+    const titleCell = <TableCell value={row.title} />
+    const priceCell = <TableCell value={`${row.price} ${row.currency.toUpperCase()}`} />
+    const dimensionCell = <TableCell value={row.dimension_covered_m2!} />
+    const operationCell = <TableCell value={row.operation} />
+    const typeCell = <TableCell value={row.type} />
+    const pricePerM2Cell = <TableCell value={`${(row.price / row.dimension_covered_m2!).toFixed(2)} ${row.currency.toUpperCase()}`} />
+    const priceDownsCell = <TableCell value={row.last_30d_price_downs!} />
+    const deltaPriceCell = <TableCell value={`${(row.last_30d_delta_price as any * 100).toFixed(2)}%`} />
+    const firstSeenCell = <TableCell value={timeAgo(row.first_seen?.value)} />
+    const lastSeen = <TableCell value={timeAgo(row.timestamp?.value)} />
+
+    return (
+        <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 transition-all duration-100 ease-in-out hover:bg-gray-700 cursor-pointer">
+            {isMobile && (
+                <>
+                    {logoCell}
+                    {titleCell}
+                    {priceCell}
+                    {dimensionCell}
+                </>
+            )}
+            {!isMobile && (
+                <>
+                    {logoCell}
+                    {titleCell}
+                    {operationCell}
+                    {typeCell}
+                    {priceCell}
+                    {pricePerM2Cell}
+                    {dimensionCell}
+                    {priceDownsCell}
+                    {deltaPriceCell}
+                    {firstSeenCell}
+                    {lastSeen}
+                </>
+            )}
+        </tr>
+    );
+}
 
 export default TableRow;
