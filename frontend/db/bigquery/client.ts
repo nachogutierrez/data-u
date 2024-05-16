@@ -5,7 +5,7 @@ import { BigQuery, BigQueryDate } from '@google-cloud/bigquery';
 import { getSecret } from '@/secret-manager';
 import { replacePlaceholders } from '@/lib/render';
 import TTLCache from '@isaacs/ttlcache';
-import { Coordinate, DataPoint, Filters, Operation, OrderByDirection, OrderByOption, PropertyType } from './types';
+import { Coordinate, DataPoint, Filters, Insights, Operation, OrderByDirection, OrderByOption, PropertyType } from './types';
 
 // Get the file path of the current script
 const __filename = fileURLToPath(import.meta.url);
@@ -111,6 +111,67 @@ function buildWhereConditions(filters: Filters): string {
     if (filters.operation !== undefined) conditions.push(`operation = '${Operation[filters.operation].toLocaleLowerCase()}'`);
 
     return conditions.length > 0 ? `\nAND ${conditions.join('\nAND ')}` : '';
+}
+
+export async function getInsightsLatest(filters: Filters): Promise<Insights> {
+
+    let filtersCopy = { ...filters }
+    filtersCopy.price = undefined
+    filtersCopy.priceM2 = undefined
+    filtersCopy.priceDowns = undefined
+    filtersCopy.priceDelta = undefined
+
+    const placeholders = {
+        where_conditions: buildWhereConditions(filtersCopy),
+    }
+
+    const results = await runQuery('insights-latest.sql', placeholders) as any[]
+
+    if (results.length !== 1) {
+        throw new Error(`Expected 1 result for insights, got ${results.length}`)
+    }
+
+    const {
+        median_price,
+        median_price_m2,
+        median_dimension_covered_m2,
+        q1_price,
+        q1_price_m2,
+        q1_dimension_covered_m2,
+        q3_price,
+        q3_price_m2,
+        q3_dimension_covered_m2,
+        min_price,
+        min_price_m2,
+        min_dimension_covered_m2,
+        max_price,
+        max_price_m2,
+        max_dimension_covered_m2
+    } = results[0]
+
+    return Promise.resolve({
+        price: {
+            median: median_price,
+            q1: q1_price,
+            q3: q3_price,
+            min: min_price,
+            max: max_price
+        },
+        price_m2: {
+            median: median_price_m2,
+            q1: q1_price_m2,
+            q3: q3_price_m2,
+            min: min_price_m2,
+            max: max_price_m2
+        },
+        dimension_covered_m2: {
+            median: median_dimension_covered_m2,
+            q1: q1_dimension_covered_m2,
+            q3: q3_dimension_covered_m2,
+            min: min_dimension_covered_m2,
+            max: max_dimension_covered_m2
+        }
+    })
 }
 
 /**

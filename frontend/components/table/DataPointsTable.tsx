@@ -4,17 +4,18 @@ import Mobile from '@/components/Mobile';
 import TableHeader from './TableHeader';
 import TableRow from './TableRow';
 
-import { DataPoint } from '@/db/bigquery/types';
+import { DataPoint, Insights } from '@/db/bigquery/types';
 
 type DataPointsTableProps = {
     data: DataPoint[];
+    insights: Insights
 };
 
 const desktopColumns = ["Source", "Title", "Operation", "Type", "Price", "Price per m2", "Dimension (m2)", "Price downs", "Price delta (%)", "First seen", "Last seen"];
 const mobileColumns = ["Source", "Title", "Price", "Dimension (m2)"];
 
 export default function DataPointsTable(props: DataPointsTableProps) {
-    const { data } = props;
+    const { data, insights } = props;
 
     return (
         <>
@@ -24,7 +25,7 @@ export default function DataPointsTable(props: DataPointsTableProps) {
                         <TableHeader columns={desktopColumns} />
                         <tbody>
                             {data.map((row, index) => (
-                                <TableRow key={index} row={row} />
+                                <TableRow key={index} row={row} insights={insights} />
                             ))}
                         </tbody>
                     </table>
@@ -36,7 +37,7 @@ export default function DataPointsTable(props: DataPointsTableProps) {
                         <TableHeader columns={mobileColumns} />
                         <tbody>
                             {data.map((row, index) => (
-                                <TableRow key={index} row={row} isMobile />
+                                <TableRow key={index} row={row} insights={insights} isMobile />
                             ))}
                         </tbody>
                     </table>

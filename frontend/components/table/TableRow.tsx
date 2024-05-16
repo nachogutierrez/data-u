@@ -1,11 +1,13 @@
 import React from 'react';
 import Image from 'next/image';
 import { timeAgo } from '@/lib/utils';
-import { DataPoint } from '@/db/bigquery/types';
+import { BoxPlotDataPoint, DataPoint, Insights } from '@/db/bigquery/types';
+import { formatMoney } from '@/lib/format';
 
 type TableRowProps = {
     row: DataPoint;
     isMobile?: boolean;
+    insights: Insights
 };
 
 const LogoTableCell = ({ link }: { link: string }) => (
@@ -22,24 +24,52 @@ const LogoTableCell = ({ link }: { link: string }) => (
     </td>
 )
 
-const TableCell = ({ value }: { value: string | number }) => <td className="py-4 px-6 select-none">{value}</td>
+const TableCell = ({ value, backgroundColor }: { value: string | number, backgroundColor?: string }) => (
+    <td className="py-4 px-6 select-none" style={{ backgroundColor }}>{value}</td>
+)
 
-const TableRow: React.FC<TableRowProps> = ({ row, isMobile = false }) => {
+export const COLOR_OUTLIER_LOW = 'gray'
+export const COLOR_VERY_LOW = '#99CC6666'
+export const COLOR_LOW = '#FFCC6666'
+export const COLOR_HIGH = '#FF996666'
+export const COLOR_VERY_HIGH = '#FF666666'
+export const COLOR_OUTLIER_HIGH = 'gray'
+
+const TableRow: React.FC<TableRowProps> = ({ row, isMobile = false, insights }) => {
+
+    function getColor(value: number, stats: BoxPlotDataPoint) {
+        const iqr = stats.q3 - stats.q1
+        const brLeft = stats.q1 - 1.5*iqr
+        const brRight = stats.q3 + 1.5*iqr
+        if (value <= brLeft) {
+            return COLOR_OUTLIER_LOW
+        } else if (value >= brRight) {
+            return COLOR_OUTLIER_HIGH
+        } else if (value <= stats.q1) {
+            return COLOR_VERY_LOW
+        } else if (value >= stats.q3) {
+            return COLOR_VERY_HIGH
+        } else if (value <= stats.median) {
+            return COLOR_LOW
+        } else {
+            return COLOR_HIGH
+        }
+    }
 
     const logoCell = <LogoTableCell link={row.link} />
     const titleCell = <TableCell value={row.title} />
-    const priceCell = <TableCell value={`${row.price} ${row.currency.toUpperCase()}`} />
+    const priceCell = <TableCell value={formatMoney(row.price, row.currency)} backgroundColor={getColor(row.price, insights.price)} />
     const dimensionCell = <TableCell value={row.dimension_covered_m2!} />
     const operationCell = <TableCell value={row.operation} />
     const typeCell = <TableCell value={row.type} />
-    const pricePerM2Cell = <TableCell value={`${(row.price / row.dimension_covered_m2!).toFixed(2)} ${row.currency.toUpperCase()}`} />
+    const pricePerM2Cell = <TableCell value={formatMoney(row.price / row.dimension_covered_m2!, 'usd')} backgroundColor={getColor(row.price / row.dimension_covered_m2!, insights.price_m2)}/>
     const priceDownsCell = <TableCell value={row.last_30d_price_downs!} />
     const deltaPriceCell = <TableCell value={`${(row.last_30d_delta_price as any * 100).toFixed(2)}%`} />
     const firstSeenCell = <TableCell value={timeAgo(row.first_seen?.value)} />
     const lastSeen = <TableCell value={timeAgo(row.timestamp?.value)} />
 
     return (
-        <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 transition-all duration-100 ease-in-out hover:bg-gray-700 cursor-pointer">
+        <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 transition-all duration-100 ease-in-out hover:bg-gray-700 hover:text-white cursor-pointer">
             {isMobile && (
                 <>
                     {logoCell}

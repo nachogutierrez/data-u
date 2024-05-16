@@ -65,3 +65,17 @@ export type DataPoint = {
     last_30d_delta_price?: number,
     first_seen?: BigQueryTimestamp
 }
+
+export type BoxPlotDataPoint = {
+    median: number,
+    q1: number,
+    q3: number,
+    min: number,
+    max: number
+}
+
+export type Insights = {
+    price: BoxPlotDataPoint,
+    price_m2: BoxPlotDataPoint,
+    dimension_covered_m2: BoxPlotDataPoint,
+}
