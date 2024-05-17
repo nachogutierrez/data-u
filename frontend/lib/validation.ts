@@ -3,7 +3,7 @@ import { runQuery as runNominatimQuery } from '@/lib/nominatim';
 
 const integerRegex = /^[1-9][0-9]*|0$/;
 const floatRegex = /^[0-9]+\.[0-9]{2}$/;
-const locationQueryRegex = /^[a-zA-Z ,]+$/;
+const locationQueryRegex = /^[a-zA-Z ñÑ,]+$/;
 
 export function validateIsIntegerInRange(name: string, value: string, min?: number, max?: number) {
   if (value === undefined) return;

@@ -10,6 +10,18 @@ type LocationFilterProps = {
   isTransitionPending?: boolean
 }
 
+function utf8ToBase64(str: string) {
+  // Encode the string as UTF-8
+  const utf8Bytes = new TextEncoder().encode(str);
+  // Convert the Uint8Array to a string of binary data
+  let binaryString = "";
+  for (let byte of utf8Bytes) {
+      binaryString += String.fromCharCode(byte);
+  }
+  // Encode the binary string as Base64
+  return btoa(binaryString);
+}
+
 export default function LocationFilter(props: LocationFilterProps) {
 
   const { googleMapsApiKey, changeQueryParams } = props
@@ -45,7 +57,7 @@ export default function LocationFilter(props: LocationFilterProps) {
       .replaceAll('Ó', 'O')
       .replaceAll('Ú', 'U')
     setLocationQuery(safeName)
-    changeQueryParams({ q: btoa(safeName) })
+    changeQueryParams({ q: utf8ToBase64(safeName) })
   }
 
   function cropString(s: string, maxLength: number) {

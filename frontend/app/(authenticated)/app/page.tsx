@@ -5,10 +5,6 @@ import { getDataPointsLatest, getInsightsLatest } from '@/db/bigquery/client';
 import DataPointsTable from '@/components/table/DataPointsTable';
 import DataPointsTableFilters from '@/components/table/DataPointsTableFilters';
 import { validateSearchParams, extractFilters } from '@/lib/validation';
-import BellCurveChart from '@/components/charts/BellCurveChart';
-import RangePlot from '@/components/charts/RangePlot';
-import BoxPlot from '@/components/charts/BoxPlot';
-import SimpleBoxPlot from '@/components/charts/SimpleBoxPlot';
 import DataPointsTableStatistics from '@/components/table/DataPointsTableStatistics';
 
 type AppPageProps = {
