@@ -3,7 +3,10 @@ import axios from 'axios'
 const API = "https://api-ar.redremax.com"
 const ENDPOINT = "/remaxweb-ar/api/listings/findAll"
 
-const createLink = ({ pageNumber, pageSize = 100 }) => `${API}${ENDPOINT}?page=${pageNumber}&pageSize=${pageSize}&sort=-createdAt&in=operationId:1`
+const OP_SALE = '1'
+const OP_RENT = '2'
+
+const createLink = ({ pageNumber, pageSize, operation }) => `${API}${ENDPOINT}?page=${pageNumber}&pageSize=${pageSize}&sort=-createdAt&in=operationId:${operation}`
 
 export function iterator(opts = {}) {
 
@@ -20,7 +23,7 @@ export function iterator(opts = {}) {
     // next :: () => [RawDataPoint]
     async function next() {
         try {
-            const response = await axios.get(createLink({ pageNumber: page, pageSize }))
+            const response = await axios.get(createLink({ pageNumber: page, pageSize, operation: OP_SALE }))
             lastData = response.data.data.data
             return lastData
         } finally {

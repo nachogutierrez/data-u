@@ -127,12 +127,13 @@ async function main(flags = {}) {
     }
     const pushingDataElapsedMillis = new Date().getTime() - pushingDataStart
 
+    // TODO: find a better way to record errors
     // Push errors
-    const pushingErrorsStart = new Date().getTime()
-    if (errors.length > 0) {
-        await pushErrors(workloadId, errors)
-    }
-    const pushingErrorsElapsedMillis = new Date().getTime() - pushingErrorsStart
+    // const pushingErrorsStart = new Date().getTime()
+    // if (errors.length > 0) {
+    //     await pushErrors(workloadId, errors)
+    // }
+    // const pushingErrorsElapsedMillis = new Date().getTime() - pushingErrorsStart
 
     // Push stats
     const allStats = {
@@ -143,9 +144,9 @@ async function main(flags = {}) {
         pushingDataElapsedMillis,
         nextFailures
     }
-    if (errors.length > 0) {
-        allStats.pushingErrorsElapsedMillis = pushingErrorsElapsedMillis
-    }
+    // if (errors.length > 0) {
+    //     allStats.pushingErrorsElapsedMillis = pushingErrorsElapsedMillis
+    // }
     await pushStats(workloadId, allStats)
 
     await close()
