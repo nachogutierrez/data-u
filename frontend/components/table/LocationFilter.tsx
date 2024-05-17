@@ -12,7 +12,7 @@ type LocationFilterProps = {
 
 function utf8ToBase64(str: string) {
   // Encode the string as UTF-8
-  const utf8Bytes = new TextEncoder().encode(str);
+  const utf8Bytes: any = new TextEncoder().encode(str);
   // Convert the Uint8Array to a string of binary data
   let binaryString = "";
   for (let byte of utf8Bytes) {
