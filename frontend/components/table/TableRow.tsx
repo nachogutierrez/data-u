@@ -10,11 +10,22 @@ type TableRowProps = {
     insights: Insights
 };
 
-const LogoTableCell = ({ link }: { link: string }) => (
+function getLogo(host: string) {
+    switch(host) {
+        case 'remax':
+            return '/logo/r3m4x.png'
+        case 'zonaprop':
+            return '/logo/z0n4pr0p.png'
+        default:
+            return ''
+    }
+}
+
+const LogoTableCell = ({ host, link }: { host: string, link: string }) => (
     <td className="px-6 py-4 flex justify-start">
         <a href={link} target="_blank" rel="noopener noreferrer">
             <Image
-                src={`/logo/r3m4x.png`}
+                src={getLogo(host)}
                 width={24}
                 height={24}
                 alt='logo'
@@ -56,7 +67,7 @@ const TableRow: React.FC<TableRowProps> = ({ row, isMobile = false, insights }) 
         }
     }
 
-    const logoCell = <LogoTableCell link={row.link} />
+    const logoCell = <LogoTableCell host={row.host} link={row.link} />
     const titleCell = <TableCell value={row.title} />
     const priceCell = <TableCell value={formatMoney(row.price, row.currency)} backgroundColor={getColor(row.price, insights.price)} />
     const dimensionCell = <TableCell value={row.dimension_covered_m2!} />
