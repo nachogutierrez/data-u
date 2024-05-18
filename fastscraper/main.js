@@ -89,7 +89,10 @@ async function main(flags = {}) {
             try {
                 normalizedData.push({ ...normalize(rawDataPoint), timestamp })
             } catch(error) {
-                errors.push({ error: serializeError(error), context: rawDataPoint })
+                errors.push({ error: serializeError(error), context: {
+                    remax: `https://www.remax.com.ar/listings/${rawDataPoint.slug}`,
+                    zonaprop: `https://www.zonaprop.com.ar${rawDataPoint.url}`
+                } })
             }
         }
 
@@ -129,11 +132,11 @@ async function main(flags = {}) {
 
     // TODO: find a better way to record errors
     // Push errors
-    // const pushingErrorsStart = new Date().getTime()
-    // if (errors.length > 0) {
-    //     await pushErrors(workloadId, errors)
-    // }
-    // const pushingErrorsElapsedMillis = new Date().getTime() - pushingErrorsStart
+    const pushingErrorsStart = new Date().getTime()
+    if (errors.length > 0) {
+        await pushErrors(workloadId, errors)
+    }
+    const pushingErrorsElapsedMillis = new Date().getTime() - pushingErrorsStart
 
     // Push stats
     const allStats = {
@@ -144,9 +147,9 @@ async function main(flags = {}) {
         pushingDataElapsedMillis,
         nextFailures
     }
-    // if (errors.length > 0) {
-    //     allStats.pushingErrorsElapsedMillis = pushingErrorsElapsedMillis
-    // }
+    if (errors.length > 0) {
+        allStats.pushingErrorsElapsedMillis = pushingErrorsElapsedMillis
+    }
     await pushStats(workloadId, allStats)
 
     await close()

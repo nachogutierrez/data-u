@@ -76,7 +76,10 @@ export function iterator(opts = {}) {
     // hasNext :: () => boolean
     async function hasNext() {
         if (repeated.size >= 1500) {
-            console.log('detected too many repeated ids, stopping.');
+            console.log(`detected too many repeated ids at page ${pageNumber}, stopping.`);
+        }
+        if (lastData !== undefined && lastData.length === 0) {
+            console.log(`api returned empty at page ${pageNumber}`);
         }
         return (maxPages < 0 || pageNumber <= maxPages) 
             && (lastData === undefined || lastData.length > 0) 
@@ -113,6 +116,15 @@ export function iterator(opts = {}) {
             }, createPayload(pageNumber, pageSize, OP_SALE));
 
             // console.log(result.paging);
+
+            if (!hasNext) {
+                console.log({
+                    pageNumber,
+                    isLastPage: result.paging.lastPage,
+                    totalPages: result.paging.totalPages,
+                    paging: result.paging
+                });
+            }
 
             hasNextPage = !result.paging.lastPage || pageNumber < result.paging.totalPages
 
