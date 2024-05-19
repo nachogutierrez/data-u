@@ -75,7 +75,7 @@ export function iterator(opts = {}) {
 
     // hasNext :: () => boolean
     async function hasNext() {
-        if (repeated.size >= 1500) {
+        if (repeated.size >= 5000) {
             console.log(`detected too many repeated ids at page ${pageNumber}, stopping.`);
         }
         if (lastData !== undefined && lastData.length === 0) {
@@ -83,7 +83,7 @@ export function iterator(opts = {}) {
         }
         return (maxPages < 0 || pageNumber <= maxPages) 
             && (lastData === undefined || lastData.length > 0) 
-            && repeated.size < 25
+            && repeated.size < 5000
             && hasNextPage
     }
 
@@ -115,16 +115,7 @@ export function iterator(opts = {}) {
                 return response.json(); // Assuming the response is in JSON format
             }, createPayload(pageNumber, pageSize, OP_SALE));
 
-            // console.log(result.paging);
-
-            if (!hasNext) {
-                console.log({
-                    pageNumber,
-                    isLastPage: result.paging.lastPage,
-                    totalPages: result.paging.totalPages,
-                    paging: result.paging
-                });
-            }
+            console.log(result.paging);
 
             hasNextPage = !result.paging.lastPage || pageNumber < result.paging.totalPages
 

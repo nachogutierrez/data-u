@@ -26,3 +26,11 @@ export function timeAgo(dateString: any) {
 
     return 'just now';
 }
+
+export async function measure(label: string, f: any) {
+    const start = Date.now()
+    const response = await f()
+    const elapsedMillis = Date.now() - start
+    console.log(`${label}: ${elapsedMillis}ms`)
+    return response
+}

@@ -6,6 +6,7 @@ import { getSecret } from '@/secret-manager';
 import { replacePlaceholders } from '@/lib/render';
 import TTLCache from '@isaacs/ttlcache';
 import { Coordinate, DataPoint, Filters, Insights, Operation, OrderByDirection, OrderByOption, PropertyType } from './types';
+import { measure } from '@/lib/utils';
 
 // Get the file path of the current script
 const __filename = fileURLToPath(import.meta.url);
@@ -113,7 +114,7 @@ function buildWhereConditions(filters: Filters): string {
     return conditions.length > 0 ? `\nAND ${conditions.join('\nAND ')}` : '';
 }
 
-export async function getInsightsLatest(filters: Filters): Promise<Insights> {
+export async function getInsightsLatest(filters: Filters): Promise<Insights|undefined> {
 
     let filtersCopy = { ...filters }
     filtersCopy.price = undefined
@@ -125,10 +126,12 @@ export async function getInsightsLatest(filters: Filters): Promise<Insights> {
         where_conditions: buildWhereConditions(filtersCopy),
     }
 
-    const results = await runQuery('insights-latest.sql', placeholders) as any[]
+    const results = await measure(`insights-latest.sql`, () => runQuery('insights-latest.sql', placeholders)) as any[]
 
-    if (results.length !== 1) {
+    if (results.length > 1) {
         throw new Error(`Expected 1 result for insights, got ${results.length}`)
+    } else if (results.length === 0) {
+        return Promise.resolve(undefined)
     }
 
     const {
@@ -185,5 +188,5 @@ export async function getDataPointsLatest(filters: Filters): Promise<DataPoint[]
         skip_results: filters.pagination.pageNumber * filters.pagination.pageSize
     };
 
-    return await runQuery('datapoints-latest.sql', placeholders) as DataPoint[];
+    return await measure(`datapoints-latest.sql`, () => runQuery('datapoints-latest.sql', placeholders)) as DataPoint[];
 }

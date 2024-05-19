@@ -1,5 +1,6 @@
 import { Filters, Operation, OrderByDirection, OrderByOption, PropertyType } from '@/db/bigquery/types';
 import { runQuery as runNominatimQuery } from '@/lib/nominatim';
+import { measure } from './utils';
 
 const integerRegex = /^[1-9][0-9]*|0$/;
 const floatRegex = /^[0-9]+\.[0-9]{2}$/;
@@ -132,7 +133,7 @@ export async function extractFilters(params: { [key: string]: string | string[] 
 
   if (locationQueryBase64 !== undefined) {
     const decodedLocationQuery = Buffer.from(locationQueryBase64, 'base64').toString('utf-8');
-    const { polygon } = await runNominatimQuery(decodedLocationQuery);
+    const { polygon } = await measure(`Nominatim('${decodedLocationQuery}')`, () => runNominatimQuery(decodedLocationQuery))
     mapPolygon = polygon;
   }
 
