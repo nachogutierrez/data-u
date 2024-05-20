@@ -50,7 +50,11 @@ export async function getAuthConfig() {
         }
 
         return true
-      }
+      },
+      async redirect({ url, baseUrl }) {
+        // Ensure the correct redirect URL is used
+        return url.startsWith(baseUrl) ? url : baseUrl;
+      },
     },
     providers: [
       GoogleProvider({

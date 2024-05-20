@@ -16,6 +16,6 @@ cat > "$filename"
 # Example: if you need to pass the temp file to a script, you could do something like:
 # ./your_script.sh "$tmp_file"
 # cat "$tmp_file"
-gcloud app deploy $filename
+gcloud app deploy --project=data-u-420919 $filename
 
 # The temporary file will be deleted automatically when the script exits

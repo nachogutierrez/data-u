@@ -9,7 +9,7 @@
     "start": "next start",
     "lint": "next lint",
     "deploy-app": "./bin/render app.yaml | ./bin/deploy",
-    "deploy-app-local": "./bin/render app.yaml .env.local | ./bin/deploy",
+    "deploy-app-local": "./bin/render app.yaml .env | ./bin/deploy",
     "repair-app": "sudo gcloud beta app repair",
     "tail-logs": "gcloud app logs tail",
     "fetch-secrets": "node fetch-secrets.mjs"
