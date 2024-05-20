@@ -1,6 +1,5 @@
 import type { NextAuthConfig } from 'next-auth';
 import GoogleProvider from "next-auth/providers/google";
-import { getSecret } from '@/secret-manager';
 
 const WHITELISTED = [
   'nachogutierrezibanez@gmail.com',
@@ -55,8 +54,8 @@ export async function getAuthConfig() {
     },
     providers: [
       GoogleProvider({
-        clientId: await getSecret('GOOGLE_CLIENT_ID'),
-        clientSecret: await getSecret('GOOGLE_CLIENT_SECRET'),
+        clientId: process.env.GOOGLE_CLIENT_ID,
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
         authorization: {
           params: {
             prompt: "consent",

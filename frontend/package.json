@@ -11,12 +11,14 @@
     "deploy-app": "./bin/render app.yaml | ./bin/deploy",
     "deploy-app-local": "./bin/render app.yaml .env.local | ./bin/deploy",
     "repair-app": "sudo gcloud beta app repair",
-    "tail-logs": "gcloud app logs tail"
+    "tail-logs": "gcloud app logs tail",
+    "fetch-secrets": "node fetch-secrets.mjs"
   },
   "dependencies": {
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
     "@google-cloud/bigquery": "^7.7.0",
+    "@google-cloud/secret-manager": "^5.5.0",
     "@isaacs/ttlcache": "^1.4.1",
     "@mui/material": "^5.15.18",
     "@mui/x-charts": "^7.3.2",

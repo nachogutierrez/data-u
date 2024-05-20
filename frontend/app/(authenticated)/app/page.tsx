@@ -1,6 +1,5 @@
 import React from 'react';
 import Page from '@/components/Page';
-import { getSecret } from '@/secret-manager';
 import { getDataPointsLatest, getInsightsLatest } from '@/db/bigquery/client';
 import DataPointsTable from '@/components/table/DataPointsTable';
 import DataPointsTableFilters from '@/components/table/DataPointsTableFilters';
@@ -16,7 +15,7 @@ export default async function AppPage(props: AppPageProps) {
   validateSearchParams(props.searchParams);
 
   // Fetch secrets
-  const googleMapsApiKey = await getSecret('GOOGLE_MAPS_API_KEY');
+  const googleMapsApiKey = process.env.GOOGLE_MAPS_API_KEY!
 
   // Extract filters from search params
   const filters = await extractFilters(props.searchParams);
@@ -28,8 +27,8 @@ export default async function AppPage(props: AppPageProps) {
   return (
     <Page>
       <DataPointsTableFilters googleMapsApiKey={googleMapsApiKey} />
-      <DataPointsTableStatistics insights={insights} />
-      <DataPointsTable data={data} insights={insights}></DataPointsTable>
+      <DataPointsTableStatistics insights={insights!} />
+      <DataPointsTable data={data} insights={insights!}></DataPointsTable>
     </Page>
   );
 }

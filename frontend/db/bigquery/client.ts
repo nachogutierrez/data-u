@@ -2,7 +2,6 @@ import fs from 'fs/promises';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import { BigQuery, BigQueryDate } from '@google-cloud/bigquery';
-import { getSecret } from '@/secret-manager';
 import { replacePlaceholders } from '@/lib/render';
 import TTLCache from '@isaacs/ttlcache';
 import { Coordinate, DataPoint, Filters, Insights, Operation, OrderByDirection, OrderByOption, PropertyType } from './types';
@@ -29,12 +28,12 @@ export async function getClient(): Promise<BigQuery> {
 
     // Fetch secrets in parallel
     const [privateKey, projectId, clientEmail] = await Promise.all([
-        getSecret('BIGQUERY_PRIVATE_KEY'),
-        getSecret('BIGQUERY_PROJECT_ID'),
-        getSecret('BIGQUERY_CLIENT_EMAIL')
+        process.env.BIGQUERY_PRIVATE_KEY,
+        process.env.BIGQUERY_PROJECT_ID,
+        process.env.BIGQUERY_CLIENT_EMAIL
     ]);
 
-    const decodedPrivateKey = Buffer.from(privateKey, 'base64').toString('utf-8');
+    const decodedPrivateKey = Buffer.from(privateKey!, 'base64').toString('utf-8');
 
     // Initialize the BigQuery client
     cachedClient = new BigQuery({
